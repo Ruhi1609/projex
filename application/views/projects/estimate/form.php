@@ -80,7 +80,7 @@
 <div class="container">
     <h4 class="mb-3">Create Estimate</h4>
 
-    <form class="d-flex flex-column">
+    <form class="d-flex flex-column" action="<?=base_url()?>project/estimate/process" method="post">
         <div class="form-wrapper d-flex">
             <!-- Left Side (20%) -->
             <div class="left-section">
@@ -146,7 +146,7 @@
         </tr>
     </thead>
     <tbody id="itemTableBody">
-        <!-- Dynamic rows will be inserted here -->
+ 
     </tbody>
 </table>
 
@@ -166,6 +166,7 @@
                             <div class="col-md-6">
                             <h5>Estimate Amount</h5>
                             <h3 id="estimate_amount">$0.00</h3>
+                            <input id="total_est_amount" type="hidden" value="" name="total_est_amount" id="">
                             </div>
                             
                             
@@ -174,7 +175,8 @@
 
                     <!-- Save Button -->
                     <div class="text-end mt-3">
-                        <button type="submit" class="btn btn-success">Save Estimate</button>
+                    <button type="submit" class="btn btn-success">Save Estimate</button>
+
                     </div>
                 </div>
 
@@ -222,7 +224,7 @@ function get_service_details(item_id){
     });
 }
 function updateServiceCharge(data) {
-    alert(data);
+    //alert(data);
     // Assuming the response contains a field 'service_charge' to be shown
     $("#service_charge").text(`$${parseFloat(data).toFixed(2)}`);
 }
@@ -260,16 +262,44 @@ function updateAmount(input, price) {
     amountCell.text(price * quantity);
     updateEstimateAmount();
 }
+function updateServiceCharge(data) {
+    var serviceCharge = parseFloat(data) || 0;
+    $("#service_charge").text(`$${serviceCharge.toFixed(2)}`);
+    updateEstimateAmount(); // Recalculate total estimate
+}
+
 function updateEstimateAmount() {
     var totalEstimate = 0;
 
     $(".amount").each(function () {
         totalEstimate += parseFloat($(this).text()) || 0;
     });
-    // alert(totalEstimate);
 
-    $("#estimate_amount").text(`$${totalEstimate.toFixed(2)}`); // Format as currency
+    var serviceCharge = parseFloat($("#service_charge").text().replace("$", "")) || 0;
+
+    var finalTotal = totalEstimate + serviceCharge;
+
+    $("#estimate_amount").text(`$${finalTotal.toFixed(2)}`); // Format as currency
+    $('#total_est_amount').val(`${finalTotal.toFixed(2)}`);
 }
+// function submitEstimate() {
+//     var formData = $("form").serialize(); // Serialize form data
+
+//     $.ajax({
+//         url: "<?= base_url();?>project/estimate/process",
+//         type: "POST",
+//         data: formData,
+//         success: function(response) {
+//             alert("Estimate saved successfully!");
+//             window.location.href = "<?= base_url();?>project/estimate/list"; // Redirect to list page
+//         },
+//         error: function() {
+//             alert("Failed to save estimate. Please try again.");
+//         }
+//     });
+// }
+
+
 
 // Function to remove a row when clicking "Remove" button
 function removeRow(item_id) {

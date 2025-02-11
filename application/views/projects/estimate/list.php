@@ -103,47 +103,53 @@
         </div>
 
         <div class="table-container">
-            <table class="table table-bordered table-hover text-center">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Estimate </th>
-                        <th>Date</th>
-                        <th>Customer</th>
-                        <th>Worksheet</th>
-                        <th>Notes</th>
-                        <th>Status</th>
-                        <th>Amount</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody> <?php $sl_no = 1;
-                        // foreach ($estimate as $e) { ?>
-                    <tr>
-                        <td><?//= $sl_no ?></td>
-                        <td><?//= $e->estimate ?></td>
-                        <td><?//= $e->date?></td>
-                        <td><?//= $e->customer?></td>
-                        
-                    </tr>
-                    <?php //$sl_no++; } ?>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    Actions
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">✏ Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">🗑 Delete</a></li>
-                                    <li><a class="dropdown-item" href="#">🔄 Convert to Quotation</a></li>
-                                    <li><a class="dropdown-item" href="#">📄 Convert to Work Order</a></li>
-                                    <li><a class="dropdown-item" href="#">📧 Send to Customer</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- More Rows Dynamically -->
-                </tbody>
-            </table>
+        <table class="table table-bordered table-hover text-center">
+    <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>Lead Number</th>
+            <th>Date</th>
+            <th>Confirm</th>
+            <th>Status</th>
+            <th>Login ID</th>
+            <th>Actions</th> <!-- Added a new column for actions -->
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (!empty($leads)): ?>
+            <?php foreach ($leads as $lead): ?>
+                <tr>
+                    <td><?= $lead->cust_id ?></td>
+                    <td><?= $lead->lead_number ?></td>
+                    <td><?= $lead->date ?></td>
+                    <td><?= $lead->confirm ?></td>
+                    <td><?= $lead->status ?></td>
+                    <td><?= $lead->login_id ?></td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="<?= base_url();?>project/estimate/add/<?= $lead->lead_id ?>">✏ Edit</a></li>
+                                <li><a class="dropdown-item" href="<?= base_url();?>project/estimate/delete/<?= $lead->lead_id ?>">🗑 Delete</a></li>
+                                <li><a class="dropdown-item" href="#">🔄 Convert to Quotation</a></li>
+                                <li><a class="dropdown-item" href="#">📄 Convert to Work Order</a></li>
+                                <li><a class="dropdown-item" href="#">📧 Send to Customer</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="7">No leads found.</td> <!-- Updated colspan to match new column count -->
+            </tr>
+        <?php endif; ?>
+    </tbody>
+</table>
+
+
         </div>
     </div>
 

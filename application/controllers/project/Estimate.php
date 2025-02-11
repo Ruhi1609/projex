@@ -1,8 +1,10 @@
 <?php
 class Estimate extends CI_Controller{
     public function index(){
-    
-        $this->load->view('projects/estimate/list');
+
+        $data['leads'] = $this->db->query("SELECT * FROM lead_tb")->result();
+        // echo '<pre>'; print_r($data['leads']); exit();
+        $this->load->view('projects/estimate/list',$data);
 
     }
     function add(){
@@ -15,5 +17,27 @@ class Estimate extends CI_Controller{
     public function get_all_items()
     {
         return $this->db->get('item_service_tb')->result();
+    }
+    function process()
+    {
+        $this->load->library('session');
+        $data=$_POST;
+        print_r($data);
+        $lead_array =[
+            'type'  => 'ESTIMATE',
+            'cust_id'  => $data['customer'],
+            'lead_number'  => $data['estimate_number'],
+            'date'  => $data['estimate_date'],
+            'login_id'  => $this->session->userdata('login_id'),
+        ];
+        echo '<pre>'; print_r($lead_array);
+        $this->db->insert('lead_tb',$lead_array);
+        // $data=$this->load->view('projects/estimate/list', $data); 
+
+    }
+    public function get_estimates()
+    {
+        $query = $this->db->get('lead_tb'); 
+        return $query->result();
     }
 }
