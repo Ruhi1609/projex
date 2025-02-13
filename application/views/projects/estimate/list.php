@@ -106,32 +106,39 @@
         <table class="table table-bordered table-hover text-center">
     <thead>
         <tr>
-            <th>Customer ID</th>
+            <th>Customer </th>
             <th>Lead Number</th>
             <th>Date</th>
             <th>Confirm</th>
             <th>Status</th>
-            <th>Login ID</th>
-            <th>Actions</th> <!-- Added a new column for actions -->
+            <th>Amount</th>
+            
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         <?php if (!empty($leads)): ?>
             <?php foreach ($leads as $lead): ?>
                 <tr>
-                    <td><?= $lead->cust_id ?></td>
+                    <td><?= $lead->cust_name ?></td>
                     <td><?= $lead->lead_number ?></td>
                     <td><?= $lead->date ?></td>
-                    <td><?= $lead->confirm ?></td>
+                    <td>
+                        <select name="confirm[]",class="form-control confirm">
+                        <option value="approved" <?= ($lead->confirm == 'approved') ? 'selected' : '' ?>>Approved</option>
+                        <option value="rejected" <?= ($lead->confirm == 'rejected') ? 'selected' : '' ?>>Rejected</option>
+                        </select>
+                    </td>
+
                     <td><?= $lead->status ?></td>
-                    <td><?= $lead->login_id ?></td>
+                    <td><?=$lead->amount?></td>
                     <td>
                         <div class="dropdown">
                             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 Actions
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="<?= base_url();?>project/estimate/add/<?= $lead->lead_id ?>">✏ Edit</a></li>
+                                <li><a class="dropdown-item" href="<?= base_url();?>project/estimate/edit/<?= $lead->lead_id ?>">✏ Edit</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/estimate/delete/<?= $lead->lead_id ?>">🗑 Delete</a></li>
                                 <li><a class="dropdown-item" href="#">🔄 Convert to Quotation</a></li>
                                 <li><a class="dropdown-item" href="#">📄 Convert to Work Order</a></li>
@@ -148,11 +155,20 @@
         <?php endif; ?>
     </tbody>
 </table>
-
-
         </div>
     </div>
-
+    <script>
+        function edit(lead_id){
+            window.location.href = "<?=base_url();?>project/estimate/edit/" + lead_id;
+        }
+</script>
+    <script>
+function confirmDelete(lead_id) {
+    if (confirm("Are you sure you want to delete this estimate?")) {
+        window.location.href = "<?= base_url(); ?>project/estimate/delete/" + lead_id;
+    }
+}
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
