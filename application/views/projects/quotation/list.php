@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estimate List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Quotation List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -88,21 +88,10 @@
     </style>
 </head>
 <body>
-
-    <div class="sidebar">
-        <h2>Dashboard</h2>
-        <div class="menu-item active" onclick="window.location.href='estimate_list.php'">Estimates</div>
-        <div class="menu-item" onclick="window.location.href='work_orders.php'">Work Orders</div>
-        <div class="menu-item" onclick="window.location.href='payments.php'">Payments</div>
-        <div class="menu-item" onclick="window.location.href='profile.php'">Profile</div>
-        <hr>
-        <div class="menu-item"><a href="logout" style="color: white;">Logout</a></div>
-    </div>
-
     <div class="content">
         <div class="header">
-            <h1>Estimate List</h1>
-            <a href="<?=base_url();?>project/estimate/add"><button class="btn btn-primary">+ New Estimate</button></a>
+            <h1>Quotation List</h1>
+            <a href="<?=base_url();?>project/quotation/add"><button class="btn btn-primary">+ New Quotation</button></a>
         </div>
 
         <div class="table-container">
@@ -110,7 +99,7 @@
     <thead>
         <tr>
             <th>$slno</th>
-            <th>Lead Number</th>
+            <th>Quotation Number</th>
             <th>Customer </th>
             <th>Date</th>
             <th>Status</th>
@@ -120,25 +109,24 @@
     </thead>
     <tbody>
         <?php $slno= 1;?>
-        <?php if (!empty($leads)): ?>
-            <?php foreach ($leads as $lead): ?>
+        <?php if (!empty($quotation)): ?>
+            <?php foreach ($quotation as $q): ?>
                 <tr>
                     <td><?=$slno?></td>
-                    <td><?= $lead->lead_number ?></td>
-                    <td><?= $lead->cust_name ?></td>
-                    <td><?= $lead->date ?></td>
-                    <td><?= $lead->status ?></td>
-                    <td><?=$lead->amount?></td>
+                    <td><?= $q->lead_number ?></td>
+                    <td><?= $q->cust_name ?></td>
+                    <td><?= $q->date ?></td>
+                    <td><?= $q->status ?></td>
+                    <td><?=$q->amount?></td>
                     <td>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 Actions
                             </button>
-
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="<?= base_url();?>project/estimate/edit/<?= $lead->lead_id ?>">✏ Edit</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?= base_url();?>project/estimate/delete/<?= $lead->lead_id ?>')">🗑 Delete</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/add/<?=$lead->lead_id?>">🔄 Convert to Quotation</a></li>
+                                <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/edit/<?= $q->lead_id ?>">✏ Edit</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?= base_url();?>project/quotation/delete/<?= $q->lead_id ?>')">🗑 Delete</a></li>
+                                <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/add/<?=$q->lead_id?>">🔄 Convert to Quotation</a></li>
                                 <li><a class="dropdown-item" href="#">📄 Convert to Work Order</a></li>
                                 <li><a class="dropdown-item" href="#">📧 Send to Customer</a></li>
                             </ul>
@@ -150,7 +138,7 @@
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="7">No leads found.</td> 
+                <td colspan="7">No quotation found.</td> 
             </tr>
         <?php endif; ?>
     </tbody>
@@ -159,10 +147,10 @@
     </div>
     <script>
         function edit(lead_id){
-            window.location.href = "<?=base_url();?>project/estimate/edit/" + lead_id;
+            window.location.href = "<?=base_url();?>project/quotation/edit/" + lead_id;
         }
 </script>
-    <script>
+<script>
 function confirmDelete(deleteUrl) {
     Swal.fire({
         title: 'Are you sure?',
@@ -178,7 +166,10 @@ function confirmDelete(deleteUrl) {
         }
     });
 }
+
 </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>

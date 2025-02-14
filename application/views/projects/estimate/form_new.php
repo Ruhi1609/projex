@@ -20,7 +20,7 @@
         }
         .container {
             width: 90%;
-            min-height: 100vh; /* Full screen height */
+            min-height: 100vh;
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -41,7 +41,7 @@
             background-color: #0056b3;
         }
         .form-wrapper {
-            flex-grow: 1; /* Ensures content stretches */
+            flex-grow: 1; 
             display: flex;
         }
         .left-section {
@@ -62,7 +62,7 @@
             height: 100%;
         }
         .bottom-section {
-            margin-top: auto; /* Pushes content to the bottom */
+            margin-top: auto; 
         }
         .item-contsiner{
             height: 20%;
@@ -76,7 +76,6 @@
     </style>
 </head>
 <body>
-<?php// echo print_r($data);?>
 <div class="container">
 <?php 
         $lead_id = '';
@@ -87,27 +86,31 @@
         $final_est_amount = 0;
         $final_service_amt=0;
         $service_id='';
+        $lead_id='';
         if(isset($lead)){
         foreach ($lead as $l) {
-            $lead_id    = $l->lead_id;
+            $lead_number    = $l->lead_number;
             $lead_date  =$l->date;
             $cust_id    =$l->cust_id;
             $item_id    =$l->item_id;
-            $final_est_amount = '$'.$l->amount;
-            $final_service_amt ='$'.$l->price;
+            $final_est_amount = $l->amount;
+            $final_service_amt =$l->price;
             $service_id  =$l->service_id;
+            $lead_id =$l->lead_id;
           
 
         ?><?php }}?>
     <h4 class="mb-3">Create Estimate</h4>
     <form class="d-flex flex-column" action="<?=base_url()?>project/estimate/process" method="post">
         <div class="form-wrapper d-flex">
-            <!-- Left Side (20%) -->
+           
             <div class="left-section">
+                <input type="hidden" value="<?=$lead_id?>" name="lead_id" >
+                <input type="hidden" value="<?=$mode?>" name="mode">
                 <div class="row">
                     <div class="col-md-6">
                         <label for="estimate_number" class="form-label">Estimate Number</label>
-                        <input type="text" class="form-control" id="estimate_number" name="estimate_number" placeholder="estimate_number" value="<?= isset($lead_id) ? $lead_id : ''; ?>" required> 
+                        <input type="text" class="form-control" id="estimate_number" name="estimate_number" placeholder="estimate_number" value="<?= isset($lead_number) ? $lead_number : ''; ?>" required> 
                     </div>
                     <div class="col-md-6">
                         <label for="estimate_date" class="form-label">Date</label>
@@ -133,10 +136,10 @@
                 </div>
             </div>
 
-            <!-- Vertical Line -->
+           
             <div class="vertical-line"></div>
 
-            <!-- Right Side (78%) -->
+           
             <div class="right-section">
                 <div class="row">
                     <div class="col-md-6">
@@ -192,7 +195,7 @@
     </tbody>
 </table>
 </div>
-                <!-- Notes & Estimate Amount (Fixed at the bottom) -->
+                
                 <div class="bottom-section">
                     <div class="row mt-3">
                         <div class="col-md-6">
@@ -215,7 +218,7 @@
                         </div>
                     </div>
 
-                    <!-- Save Button -->
+                   
                     <div class="text-end mt-3">
                     <button type="submit" class="btn btn-success">Save Estimate</button>
 
@@ -227,6 +230,7 @@
     </form>
 </div>
 <script>
+   
     function get_item_details(item_id) {
     if (item_id === "") {
         return; 
@@ -237,10 +241,6 @@
         type: "GET",
         dataType: "json",
         success: function(response) {
-    //         item = response.data;
-    // console.log('item prices'+item.quantity);
-    // updateAmount(0,item.price);
-            
             if (response.success) {
                 addItemToTable(response.data);
 
@@ -272,13 +272,19 @@ function get_service_details(item_id){
         }
     });
 }
+<?php if($mode == 'edit'){?>
+    $(window).on('load', function(){
+        get_service_details(<?=$service_id?>);
+        updateEstimateAmount();
+        updateAmount();
+    })
+<?php } ?>
 
 
-// Function to populate the table
+
+
 function addItemToTable(item) {
     var tableBody = $("#itemTableBody");
-
-    // Check if item already exists in the table
     if ($("#row_" + item.item_id).length) {
         alert("Item already added!");
         return;
@@ -290,9 +296,10 @@ function addItemToTable(item) {
         <td>${item.name}</td>
         <td><input type="hidden" name="item_id[]" value="${item.item_id}">
             <input type="number" name="quantity[]" class="form-control quantity" min="1" value="1" 
-                   onchange="updateAmount(this, ${item.price})">
+                   onkeyup="updateAmount(this, ${item.price})">
         </td>
-        <td><input type="hidden" name="price[] value="${item.price}">${item.price}</td>
+        <td> <input type="hidden" name="price[]" value="${item.price}">${item.price}</td>
+
         <td>
             <input type="text" name="amount[]" class="form-control amount" value="${item.price}" readonly>
         </td>
@@ -313,12 +320,9 @@ function updateAmount(input ='', price) {
     console.log('price'+price);
    
     var quantity = parseInt(input.value) || 1;
-    var amountCell = $(input).closest("tr").find(".amount");
-    amountCell.text(price * quantity);
-    amountCell.val(price * quantity);
-    // var item_total = price * quantity;
-    // console.log('item total'+item_total);
-    
+    var amount = $(input).closest("tr").find(".amount");
+    amount.text(price * quantity);
+    amount.val(price * quantity);
     updateEstimateAmount();
 }
 
@@ -348,24 +352,6 @@ function updateEstimateAmount() {
 
     $('#total_est_amount').val(`${finalTotal.toFixed(2)}`);
 }
-// function submitEstimate() {
-//     var formData = $("form").serialize(); // Serialize form data
-
-//     $.ajax({
-//         url: "<?= base_url();?>project/estimate/process",
-//         type: "POST",
-//         data: formData,
-//         success: function(response) {
-//             alert("Estimate saved successfully!");
-//             window.location.href = "<?= base_url();?>project/estimate/list"; // Redirect to list page
-//         },
-//         error: function() {
-//             alert("Failed to save estimate. Please try again.");
-//         }
-//     });
-// }
-
-
 
 // Function to remove a row when clicking "Remove" button
 function removeRow(item_id) {
