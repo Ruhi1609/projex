@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estimate Form</title>
+    <title>Work_order Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -87,35 +87,35 @@
         $final_service_amt=0;
         $service_id='';
         $lead_id='';
+       
         if(isset($lead)){
         foreach ($lead as $l) {
-            $lead_number        = $l->lead_number;
-            $lead_date          =$l->date;
-            $cust_id            =$l->cust_id;
-            $item_id            =$l->item_id;
-            $final_est_amount   = $l->amount;
-            $final_service_amt  =$l->price;
-            $service_id         =$l->service_id;
-            $lead_id            =$l->lead_id;
+            $lead_number    = $l->lead_number;
+            $lead_date  =$l->date;
+            $cust_id    =$l->cust_id;
+            $item_id    =$l->item_id;
+            $final_est_amount = $l->amount;
+            $final_service_amt =$l->price;
+            $service_id  =$l->service_id;
+            $lead_id =$l->lead_id;   
+            
         ?><?php }}?>
-    <h4 class="mb-3">Create Estimate</h4>
-    <form class="d-flex flex-column" action="<?=base_url()?>project/estimate/process" method="post">
-        <div class="form-wrapper d-flex">
-           
+    <h4 class="mb-3">Create Work order</h4>
+    <form class="d-flex flex-column" action="<?=base_url()?>project/work_order/process" method="post">
+        <div class="form-wrapper d-flex">           
             <div class="left-section">
-                <input type="hidden" value="<?=$lead_id?>" name="lead_id" >
+                <input type="hidden" value="<?=$work_ord_id?>" name="work_ord_id" >
                 <input type="hidden" value="<?=$mode?>" name="mode">
                 <div class="row">
                     <div class="col-md-6">
-                        <label for="estimate_number" class="form-label">Estimate Number</label>
-                        <input type="text" class="form-control" id="estimate_number" name="estimate_number" placeholder="estimate_number" value="<?= isset($lead_number) ? $lead_number : ''; ?>" required> 
+                        <label for="estimate_number" class="form-label">work_order Number</label>
+                        <input type="text" class="form-control" id="work_order_number" name="work_order_number" placeholder="work_order_number" value="<?= isset($lead_number) ? $lead_number : ''; ?>" required> 
                     </div>
                     <div class="col-md-6">
                         <label for="estimate_date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="estimate_date" name="estimate_date" value="<?= isset($lead_date) ? $lead_date:'';?>"required>
+                        <input type="date" class="form-control" id="work_order_date" name="work_order_date" value="<?= isset($lead_date) ? $lead_date:'';?>"required>
                     </div>
                 </div>
-
                 <div class="mt-3">
                     <label for="customer" class="form-label">Customer</label>
                     <select class="form-select" id="customer" name="customer" required>
@@ -132,12 +132,8 @@
                             <?php }; ?>
                     </select>
                 </div>
-            </div>
-
-           
+            </div>           
             <div class="vertical-line"></div>
-
-           
             <div class="right-section">
                 <div class="row">
                     <div class="col-md-6">
@@ -192,7 +188,7 @@
  
     </tbody>
 </table>
-</div>  
+</div>
                 <div class="bottom-section">
                     <div class="row mt-3">
                         <div class="col-md-6">
@@ -209,18 +205,19 @@
                             <h5>Estimate Amount</h5>
                             <h3 id="estimate_amount"><?=$final_est_amount?></h3>
                             <input id="total_est_amount" type="hidden" value="<?=$final_est_amount?>" name="total_est_amount" id="">
-                            </div>                
+                            </div>                            
                         </div>
-                    </div>
+                    </div> 
                     <div class="text-end mt-3">
-                    <button type="submit" class="btn btn-success">Save Estimate</button>
+                    <button type="submit" class="btn btn-success">Save work order</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 </div>
-<script>   
+<script>
+   
     function get_item_details(item_id) {
     if (item_id === "") {
         return; 
@@ -273,7 +270,6 @@ function addItemToTable(item) {
         alert("Item already added!");
         return;
     }
-
     var newRow = `
     <tr id="row_${item.item_id}">
         <td>${tableBody.children().length + 1}</td> <!-- Auto increment row number -->
@@ -299,7 +295,8 @@ function addItemToTable(item) {
 // Function to update amount dynamically when quantity changes
 function updateAmount(input ='', price) {
     console.log('input'+input);
-    console.log('price'+price);   
+    console.log('price'+price);
+   
     var quantity = parseInt(input.value) || 1;
     var amount = $(input).closest("tr").find(".amount");
     amount.text(price * quantity);
@@ -317,17 +314,17 @@ function updateServiceCharge(data) {
 
 function updateEstimateAmount() {
     var totalEstimate = 0;
-
     $(".amount").each(function () {
         totalEstimate += parseFloat($(this).text()) || 0;
     });
     console.log('estimate'+totalEstimate);
     var serviceCharge = parseFloat($("#service_charge").text().replace("$", "")) || 0;
     var finalTotal = totalEstimate + serviceCharge;
-    console.log(serviceCharge);    
+    console.log(serviceCharge);
     $("#estimate_amount").text(`$${finalTotal.toFixed(2)}`); 
     $('#total_est_amount').val(`${finalTotal.toFixed(2)}`);
 }
+
 // Function to remove a row when clicking "Remove" button
 function removeRow(item_id) {
     $("#row_" + item_id).remove();

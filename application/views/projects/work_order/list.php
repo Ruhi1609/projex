@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quotation List</title>
+    <title>Work order List</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -82,15 +82,15 @@
 <body>
     <div class="content">
         <div class="header">
-            <h1>Quotation List</h1>
-            <a href="<?=base_url();?>project/quotation/add"><button class="btn btn-primary">+ New Quotation</button></a>
+            <h1>Work order List</h1>
+            <a href="<?=base_url();?>project/work_order/add"><button class="btn btn-primary">+ New Work order</button></a>
         </div>
         <div class="table-container">
         <table class="table table-bordered table-hover text-center">
     <thead>
         <tr>
             <th>$slno</th>
-            <th>Quotation Number</th>
+            <th>Work order Number</th>
             <th>Customer </th>
             <th>Date</th>
             <th>Status</th>
@@ -100,25 +100,24 @@
     </thead>
     <tbody>
         <?php $slno= 1;?>
-        <?php if (!empty($quotation)): ?>
-            <?php foreach ($quotation as $q): ?>
+        <?php if (!empty($work_order)): ?>
+            <?php foreach ($work_order as $w): ?>
                 <tr>
                     <td><?=$slno?></td>
-                    <td><?= $q->lead_number ?></td>
-                    <td><?= $q->cust_name ?></td>
-                    <td><?= $q->date ?></td>
-                    <td><?= $q->status ?></td>
-                    <td><?=$q->amount?></td>
+                    <td><?= $w->w_number ?></td>
+                    <td><?= $w->cust_name ?></td>
+                    <td><?= $w->date ?></td>
+                    <td><?= $w->status ?></td>
+                    <td><?= $w->amount?></td>
                     <td>
                     <div class="dropdown">
                             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 Actions
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/edit/<?= $q->lead_id ?>">✏ Edit</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?= base_url();?>project/quotation/delete/<?= $q->lead_id ?>')">🗑 Delete</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/add/<?=$q->lead_id?>">🔄 Convert to Quotation</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url();?>project/work_order/add/<?= $q->lead_id ?>">📄 Convert to Work Order</a></li>
+                                <!-- <li><a class="dropdown-item" href="<?//= base_url();?>project/work_order/edit/<?//= $w->work_ord_id ?>">✏ Edit</a></li> -->
+                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?= base_url();?>project/work_order/delete/<?= $w->lead_id ?>')">🗑 Delete</a></li>
+                                <li><a class="dropdown-item" href="<?= base_url();?>project/work_assign/add/<?= $w->work_ord_id ?>">📄 assign Work</a></li>
                                 <li><a class="dropdown-item" href="#">📧 Send to Customer</a></li>
                             </ul>
                         </div>
@@ -129,18 +128,18 @@
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="7">No quotation found.</td> 
+                <td colspan="7">No work order found.</td> 
             </tr>
         <?php endif; ?>
     </tbody>
 </table>
         </div>
     </div>
-    <script>
+    <!-- <script>
         function edit(lead_id){
-            window.location.href = "<?=base_url();?>project/quotation/edit/" + lead_id;
+            window.location.href = "<?=base_url();?>project/work_order/edit/" + lead_id;
         }
-</script>
+</script> -->
 <script>
 function confirmDelete(deleteUrl) {
     Swal.fire({

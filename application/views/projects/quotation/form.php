@@ -96,14 +96,11 @@
             $final_est_amount = $l->amount;
             $final_service_amt =$l->price;
             $service_id  =$l->service_id;
-            $lead_id =$l->lead_id;
-          
-
+            $lead_id =$l->lead_id;          
         ?><?php }}?>
     <h4 class="mb-3">Create Quotation</h4>
     <form class="d-flex flex-column" action="<?=base_url()?>project/quotation/process" method="post">
-        <div class="form-wrapper d-flex">
-           
+        <div class="form-wrapper d-flex">           
             <div class="left-section">
                 <input type="hidden" value="<?=$lead_id?>" name="lead_id" >
                 <input type="hidden" value="<?=$mode?>" name="mode">
@@ -117,7 +114,6 @@
                         <input type="date" class="form-control" id="quotation_date" name="quotation_date" value="<?= isset($lead_date) ? $lead_date:'';?>"required>
                     </div>
                 </div>
-
                 <div class="mt-3">
                     <label for="customer" class="form-label">Customer</label>
                     <select class="form-select" id="customer" name="customer" required>
