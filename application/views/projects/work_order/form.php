@@ -104,7 +104,7 @@
     <form class="d-flex flex-column" action="<?=base_url()?>project/work_order/process" method="post">
         <div class="form-wrapper d-flex">           
             <div class="left-section">
-                <input type="hidden" value="<?=$work_ord_id?>" name="work_ord_id" >
+                <!-- <input type="hidden" value="<?//=$work_ord_id?>" name="work_ord_id" > -->
                 <input type="hidden" value="<?=$mode?>" name="mode">
                 <div class="row">
                     <div class="col-md-6">

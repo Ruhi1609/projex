@@ -2,7 +2,7 @@
 class Work_order extends CI_Controller{
     public function index()
     {
-        $data['work_order'] = $this->db->query("SELECT W.*,C.cust_name FROM work_order_tb W LEFT OUTER JOIN customer_tb C ON C.cust_id = W.cust_id ")->result();
+        $data['work_order'] = $this->db->query("SELECT W.*,C.cust_name,E.emp_name FROM work_order_tb W LEFT OUTER JOIN customer_tb C ON C.cust_id = W.cust_id LEFT OUTER JOIN employee_tb E ON E.emp_id = W.staff_id")->result();
         // echo '<pre>';print_r($data);exit();
    $this->load->view('projects/work_order/list',$data);
     }
@@ -87,7 +87,6 @@ class Work_order extends CI_Controller{
 
         }
     }
-
     else{
         $work_ord_id= $data['work_ord_id'];
         $work_ord_array= [

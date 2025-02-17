@@ -91,8 +91,9 @@
         <tr>
             <th>$slno</th>
             <th>Work order Number</th>
-            <th>Customer </th>
             <th>Date</th>
+            <th>Customer </th>
+            <th>Staff</th>
             <th>Status</th>
             <th>Amount</th>
             <th>Actions</th>
@@ -105,8 +106,9 @@
                 <tr>
                     <td><?=$slno?></td>
                     <td><?= $w->w_number ?></td>
-                    <td><?= $w->cust_name ?></td>
                     <td><?= $w->date ?></td>
+                    <td><?= $w->cust_name ?></td>
+                    <td><?= $w->emp_name?></td>
                     <td><?= $w->status ?></td>
                     <td><?= $w->amount?></td>
                     <td>
