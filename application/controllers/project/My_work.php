@@ -10,6 +10,10 @@ class My_work extends CI_Controller{
         $this->load->view('projects/my_work',$data);
         
     }
-
-
+ public function progress($id = 0){
+    $data['progress']= $this->db->query('SELECT WO.work_ord_id,C.cust_name,I.name FROM work_order_tb WO LEFT OUTER JOIN customer_tb C ON C.cust_id = WO.cust_id LEFT OUTER JOIN item_service_tb I ON I.item_id = WO.service_id  WHERE work_ord_id='.$id)->result();
+    $data['item_array'] = $this->db->query("SELECT LI.*,I.name FROM lead_item LI LEFT OUTER JOIN work_order_tb W ON W.work_ord_id=LI.lead_id LEFT OUTER JOIN item_service_tb I ON I.item_id = LI.item_id WHERE W.work_ord_id=".$id)->result();
+    // echo '<pre>';print_r($data);exit();
+    $this->load->view('projects/work_progress',$data);
+ }
 }

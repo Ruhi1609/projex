@@ -123,7 +123,7 @@
                                             Actions
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Start Work</a></li>
+                                        <li><a class="dropdown-item" href="<?= base_url('project/my_work/progress/' . $m->work_ord_id) ?>">Start Work</a></li>
                                         </ul>
                                     </div>
                                 </td>
