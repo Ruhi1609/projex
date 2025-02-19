@@ -70,8 +70,8 @@
                     <h5 class="form-header">Work Control</h5>
                     <!-- Buttons Side by Side -->
                     <div class="d-flex gap-2">
-                        <button id="start-btn" class="btn btn-primary btn-sm w-100">Start Work</button>
-                        <button id="stop-btn" class="btn btn-danger btn-sm w-100" disabled>Stop</button>
+                        <button id="start-btn" value="<?= $p->work_ord_id ?>" class="btn btn-primary btn-sm w-100">Start Work</button>
+                        <button id="stop-btn"  value="<?=$p->work_ord_id ?>" class="btn btn-danger btn-sm w-100" disabled>Stop Work</button>
                     </div>
 
                     <!-- Progress Bar -->
@@ -135,6 +135,10 @@
     </div>
 </div>
 <script>
+    $(document).ready(function () {
+    let work_ord_id = "<?= $p->work_ord_id ?>";
+    
+
 
 let progress = 0;
 
@@ -153,18 +157,47 @@ function updateProgressBar(progress) {
 
 // Start button functionality
 $("#start-btn").on("click", function() {
-    
-    $("#progress-slider").prop("disabled", false); 
-    $("#stop-btn").prop("disabled", false); 
-    $("#start-btn").prop("disabled", true); 
+    let work_ord_id = $(this).val();
+    // alert(work_ord_id);
+    $.ajax({
+        url:"<?=base_url('project/my_work/start')?>",
+        type:"POST",
+        data:{work_ord_id:work_ord_id},
+        success:function(response){
+            Swal.fire("Success!","work started!","success");
+            $("#progress-slider").prop("disabled",false);
+            $("#stop-btn").prop("disabled",false);
+            $("#start-btn").prop("disabled",true);
+        },
+        error:function(){
+            Swal.fire("Error!","Failed to start work!","error");
+        }
+    });
 });
 
 // Stop button functionality
 $("#stop-btn").on("click", function() {
-    // Disable the slider when stopping the progress
-    $("#progress-slider").prop("disabled", true); 
-    $("#start-btn").prop("disabled", false); 
+    let work_ord_id = $(this).val();
+    let progress = $("#progress-slider").val();
+    $.ajax({
+        url:"<?=base_url('project/my_work/stop')?>",
+        type:"POST",
+        data:{work_ord_id:work_ord_id, progress:  progress},
+        success:function(response){
+            Swal.fire("success!","Work stopped!","success");
+            $("#progress-slider").prop("disabled", true); 
+            $("#stop-btn").prop("disabled",true);
+            $("#start-btn").prop("disabled", false);
+        },
+        error:function(){
+            Swal.fire("Error!","failed to stop work!","error");
+        } 
+
+    });
+    console.log(data);
+    // alert(data);
 });
+    });
 </script>
 </body>
 </html>

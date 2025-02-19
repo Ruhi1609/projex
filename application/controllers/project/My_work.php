@@ -16,4 +16,31 @@ class My_work extends CI_Controller{
     // echo '<pre>';print_r($data);exit();
     $this->load->view('projects/work_progress',$data);
  }
+ public function start(){
+    $this->load->library('session');
+    $login_id = $this->session->userdata('login_id');
+    $emp_id = $this->db->query("SELECT E.emp_id FROM employee_tb E LEFT OUTER JOIN login L on L.login_id = E.login_id WHERE L.login_id =" .$login_id )->row()->emp_id;
+    $work_ord_id=$this->input->post('work_ord_id');
+    echo $work_ord_id;
+    $data =[
+        'work_ord_id' =>$work_ord_id,
+        'start' =>date('Y-m-d H:i:s'),
+        'staff_id'=>$emp_id
+    ];
+    // echo '<pre>';print_r($data); exit();
+    $this->db->insert('work_ord_job_tb',$data);
+    echo json_encode(["status"  => "success"]);
+ }
+ public function stop(){
+    $work_ord_id = $this->input->post('work_ord_id');
+    $progress = $this->input->post('progress');
+    $data = [
+        'percentage' => $progress,
+        'stop' => date('Y-m-d H:i:s') // Log stop time
+    ];
+    $this->db->update('work_ord_job_tb',$data,array('work_ord_id'=>$work_ord_id));
+
+   
+    echo json_encode(["status" => "success"]);
+ }
 }

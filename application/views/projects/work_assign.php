@@ -10,47 +10,16 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        body{
+        body {
             font-family: Arial, sans-serif;
-            background-color:#f0f8ff;
+            background-color: #f0f8ff;
             margin: 0;
             padding: 20px;
         }
-        .form-header{
+        .form-header {
             margin-bottom: 20px;
-            color:#007bff;
+            color: #007bff;
             font-size: 2rem;
-        }
-        .form-label {
-            font-weight: bold;
-            color: #0056b3;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .form-container {
-            max-width: 100%;
-            padding-left: 0;
-        }
-        .main-container{
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            font-size: 20px;
-        }
-        hr{
-            border-top: 3px  solid rgb(156, 194, 234);
-        }
-        .form-header{
-            font-size: 25px;
-            font-weight: 800;
-            font-style:normal;
         }
         .staff-card {
             position: relative;
@@ -68,58 +37,57 @@
             height: 20px;
             cursor: pointer;
         }
+        .work-assign-container {
+            display: flex;
+            gap: 20px;
+        }
+        .work-order-section, .assign-staff-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        .card {
+            height: 100%;
+        }
     </style>
 </head>
 <body>
 <div class="container mt-4">
-    <?php
-    $work_ord_id = '';
-    $item_id = '';
-    $job_number='';
-
-    if (isset($work_assign)) {
-        foreach ($work_assign as $w) {
-            $work_ord_id = $w->work_ord_id;
-            $item_id = $w->item_id;
-            $job_number = $w->job_number;
-        }
-    }
-    ?>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Work Order Details</h2>
-        <button class="btn btn-primary">Assign Work</button>
     </div>
-    <div class="row">
-    <form action="<?=base_url();?>project/work_assign/process" method="post">
-        <?php foreach ($work_order as $w) { ?>
-            <!-- Left Side: Work Order Details -->
-            <div class="col-md-5">
-            <input type="hidden" name="work_ord_id"value="<?=$w->work_ord_id?>">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Work Order:</h5>
-                        <p><strong>Job ID:</strong> </p>
-                        <p><strong>Date:</strong> <?= $w->date ?></p>
-                        <p><strong>Service:</strong> <?= $w->name ?></p>
-                        <h5>Customer Details</h5>
-                        <p><strong>Name:</strong> <?= $w->cust_name ?> </p>
-                        <p><strong>Contact:</strong> <?= $w->phone ?> </p>
-                        <p><strong>Address:</strong> <?= $w->address ?> </p>
-                    </div>
+
+    <!-- Work Order & Assign Staff Side by Side -->
+    <div class="d-flex flex-wrap gap-3 align-items-stretch">
+        <!-- Left Side: Work Order Details -->
+        <div class="work-order-section flex-fill">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Work Order</h5>
+                    <?php foreach ($work_order as $w) { ?>
+                        <form action="<?= base_url(); ?>project/work_assign/process" method="post">
+                            <input type="hidden" name="work_ord_id" value="<?= $w->work_ord_id ?>">
+                            <p><strong>Job ID:</strong> <?= $w->work_ord_id ?></p>
+                            <p><strong>Date:</strong> <?= $w->date ?></p>
+                            <p><strong>Service:</strong> <?= $w->name ?></p>
+                            <h5>Customer Details</h5>
+                            <p><strong>Name:</strong> <?= $w->cust_name ?> </p>
+                            <p><strong>Contact:</strong> <?= $w->phone ?> </p>
+                            <p><strong>Address:</strong> <?= $w->address ?> </p>
+                    <?php } ?>
                 </div>
             </div>
-        <?php } ?>
+        </div>
 
-        <!-- Right Side: Staff Selection in Grid -->
-        <div class="col-md-6">
-            <div class="card">
+        <!-- Right Side: Assign Staff -->
+        <div class="assign-staff-section flex-fill">
+            <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title">Assign Staff</h5>
-                    <div class="row row-cols-2 g-3">
+                    <div class="row row-cols-2 g-2">
                         <?php foreach ($staff as $s) { ?>
                             <div class="col">
                                 <div class="staff-card p-3 position-relative border rounded shadow-sm">
-                                <input type="checkbox" name="staff_id" value="<?= $s->emp_id ?>" class="select-checkbox position-absolute top-0 end-0 m-2">
+                                    <input type="checkbox" name="staff_id" value="<?= $s->emp_id ?>" class="select-checkbox position-absolute top-0 end-0 m-2">
                                     <h6 class="fw-bold"><?= $s->emp_name ?></h6>
                                     <p class="text-muted mb-0"><?= $s->position_id ?></p>
                                 </div>
@@ -135,7 +103,7 @@
 </div>
 
 <script>
-document.getElementById("assignBtn").addEventListener("click", function () {
+document.getElementById("assignBtn").addEventListener("click", function (event) {
     let checkboxes = document.querySelectorAll(".select-checkbox:checked");
 
     if (checkboxes.length > 0) {
@@ -147,6 +115,7 @@ document.getElementById("assignBtn").addEventListener("click", function () {
             confirmButtonText: "OK"
         });
     } else {
+        event.preventDefault(); // Prevent form submission if no staff is selected
         Swal.fire({
             title: "Oops!",
             text: "Please select at least one staff member before assigning.",
