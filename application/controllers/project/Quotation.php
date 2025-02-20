@@ -49,7 +49,7 @@ class Quotation extends CI_Controller{
         $this->load->library('session');
         $data=$_POST;
         $mode=$data['mode'];
-
+        // echo '<prev>';print_r($data);exit();
         if($mode== 'add')
         {
             $lead_array= [
@@ -59,7 +59,8 @@ class Quotation extends CI_Controller{
                  'date' => $data['quotation_date'],
                  'amount' => $data['total_est_amount'],
                  'login_id' => $this->session->userdata('login_id'),
-                 'service_id' => $data['service']
+                 'service_id' => $data['service'],
+                 'derived_id' =>$data['lead_id']
 
             ];
             $this->db->insert('lead_tb',$lead_array);
@@ -88,12 +89,13 @@ class Quotation extends CI_Controller{
         $lead_id= $data['lead_id'];
         $lead_array=[
             'type'=> 'QUOTATION',
-            'cust_is'=> $data['customer'],
+            'cust_id'=> $data['customer'],
             'lead_number'=>$data['quotation_number'],
             'date'  => $data['estimate_date'],
             'amount' =>$data['total_est_amount'],
             'login_id'  => $this->session->userdata('login_id'),
-            'service_id' =>$data['service']
+            'service_id' =>$data['service'],
+            'derived_id' =>$data['lead_id']
         ];
         $this->db->update('lead_tb',$lead_array,array("lead_id"=>$lead_id));
         $lead_items = [];
@@ -149,9 +151,37 @@ class Quotation extends CI_Controller{
         $data['service_id']    = $this->db->query("SELECT service_id FROM lead_tb WHERE lead_id=".$lead_id)->row()->service_id;
         $this->load->view('projects/quotation/form',$data);
     }
-function delete($lead_id=0){
-    $this->db->query("DELETE  FROM lead_tb where lead_id = $lead_id");
-    $this->index();
+    public function delete($lead_id = 0) {
+        $lead = $this->db->get_where('lead_tb', ['lead_id' => $lead_id])->row();
+    
+        if ($lead) {
+            $this->db->where('lead_id', $lead_id);
+            $this->db->delete('lead_tb');
+            redirect('project/quotation?deleted=success'); 
+        } else {
+            redirect('project/quotation?deleted=error');
+        }
+    }
+    
+    
+    
+public function status()
+{
+    $lead_id = $this->input->post('lead_id');
+    $confirm = $this->input->post('confirm'); 
 
-}  
+    if ($lead_id !== null && ($confirm === '0' || $confirm === '1')) {
+        $this->db->where('lead_id', $lead_id);
+        $this->db->update('lead_tb', ['confirm' => $confirm]);
+
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(["status" => "success", "confirm" => $confirm]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "No rows updated"]);
+        }
+    } else {
+        echo json_encode(["status" => "error", "message" => "Invalid lead ID or confirmation value"]);
+    }
+}
+
 }

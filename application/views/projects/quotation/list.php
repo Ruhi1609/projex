@@ -7,6 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
 
     <style>
         body {
@@ -102,12 +106,16 @@
         <?php $slno= 1;?>
         <?php if (!empty($quotation)): ?>
             <?php foreach ($quotation as $q): ?>
+                <?php if($q->confirm == '1'){
+                    $status = '<i class="fa-solid fa-check-circle"></i> QUO CONFIRMED';
+                    $bg ="green";
+                } else { ?> <?php $status = '<i class="fa-solid fa-clock"></i> QUOTATION';$bg ="orange"; } ?>
                 <tr>
                     <td><?=$slno?></td>
                     <td><?= $q->lead_number ?></td>
                     <td><?= $q->cust_name ?></td>
                     <td><?= $q->date ?></td>
-                    <td><?= $q->status ?></td>
+                    <td> <p style=" color:<?=$bg?>; font-weight:bold;"><?= $status ?></p></td>
                     <td><?=$q->amount?></td>
                     <td>
                     <div class="dropdown">
@@ -116,8 +124,11 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/edit/<?= $q->lead_id ?>">✏ Edit</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?= base_url();?>project/quotation/delete/<?= $q->lead_id ?>')">🗑 Delete</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/add/<?=$q->lead_id?>">🔄 Convert to Quotation</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);"onclick="confirmDelete('<?= base_url('project/quotation/delete/') . $q->lead_id ?>')">🗑 Delete</a></li>
+
+                                <!-- <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?//= base_url();?>project/quotation/delete/<?//= $q->lead_id ?>')">🗑 Delete</a></li> -->
+                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmQuotation(<?= $q->lead_id ?>)">✔ Confirm Quotation</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="undoQuotation(<?= $q->lead_id ?>)">↩️ Undo Quotation</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/work_order/add/<?= $q->lead_id ?>">📄 Convert to Work Order</a></li>
                                 <li><a class="dropdown-item" href="#">📧 Send to Customer</a></li>
                             </ul>
@@ -142,6 +153,23 @@
         }
 </script>
 <script>
+// Show success message after deletion
+$(document).ready(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('deleted') === 'success') {
+        Swal.fire({
+            title: 'Deleted!',
+            text: 'Quotation deleted successfully.',
+            icon: 'success',
+            confirmButtonColor: '#28a745',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            window.history.replaceState(null, "", window.location.pathname);
+        });
+    }
+});
+
+// Confirm delete function
 function confirmDelete(deleteUrl) {
     Swal.fire({
         title: 'Are you sure?',
@@ -157,7 +185,87 @@ function confirmDelete(deleteUrl) {
         }
     });
 }
+
 </script>
+<script>
+function confirmQuotation(lead_id) {
+    Swal.fire({
+        title: 'Confirm Quotation?',
+        text: "Are you sure you want to confirm this quotation?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Confirm'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "<?= base_url('project/quotation/status') ?>",
+                type: "POST",
+                data: { lead_id: lead_id, confirm: 1 }, // Ensure confirm = 1
+                success: function(response) {
+                    try {
+                        let res = JSON.parse(response);
+                        if (res.status === "success") {
+                            Swal.fire("Confirmed!", "Quotation has been confirmed.", "success")
+                                .then(() => {
+                                    window.location.reload(); // Reload page after confirmation
+                                });
+                        } else {
+                            Swal.fire("Error!", res.message || "Failed to confirm quotation.", "error");
+                        }
+                    } catch (e) {
+                        Swal.fire("Error!", "Invalid server response.", "error");
+                    }
+                },
+                error: function() {
+                    Swal.fire("Error!", "Something went wrong!", "error");
+                }
+            });
+        }
+    });
+}
+
+function undoQuotation(lead_id) {
+    Swal.fire({
+        title: 'Undo Confirmation?',
+        text: "Are you sure you want to undo this confirmation?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Undo'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "<?= base_url('project/quotation/status') ?>",
+                type: "POST",
+                data: { lead_id: lead_id, confirm: 0 }, // Ensure confirm = 0
+                success: function(response) {
+                    try {
+                        let res = JSON.parse(response);
+                        if (res.status === "success") {
+                            Swal.fire("Undone!", "Quotation confirmation has been undone.", "success")
+                                .then(() => {
+                                    window.location.reload(); // Reload page after undo
+                                });
+                        } else {
+                            Swal.fire("Error!", res.message || "Failed to undo confirmation.", "error");
+                        }
+                    } catch (e) {
+                        Swal.fire("Error!", "Invalid server response.", "error");
+                    }
+                },
+                error: function() {
+                    Swal.fire("Error!", "Something went wrong!", "error");
+                }
+            });
+        }
+    });
+}
+</script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

@@ -122,12 +122,18 @@
         <?php $slno= 1;?>
         <?php if (!empty($leads)): ?>
             <?php foreach ($leads as $lead): ?>
+                <?php $status ="ESTIMATE"?>
+                    <?php
+                    if(isset($leads->derived_id)){
+                        $status= "QUOTATION";}
+                    ?>
+                
                 <tr>
                     <td><?=$slno?></td>
                     <td><?= $lead->lead_number ?></td>
                     <td><?= $lead->cust_name ?></td>
                     <td><?= $lead->date ?></td>
-                    <td><?= $lead->status ?></td>
+                    <td><?= $status ?></td>
                     <td><?=$lead->amount?></td>
                     <td>
                         <div class="dropdown">

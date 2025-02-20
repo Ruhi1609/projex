@@ -3,12 +3,12 @@ class Estimate extends CI_Controller{
     public function index(){
 
         $data['leads'] = $this->db->query("SELECT L.*,C.cust_name FROM lead_tb L LEFT OUTER JOIN customer_tb C ON C.cust_id = L.cust_id WHERE L.type='ESTIMATE'")->result();
+        // echo '<pre>';print_r($data); exit();
         $this->load->view('projects/estimate/list',$data);
 
     }
     function add(){
         $data['services'] = $this->db->query("SELECT name,item_id as service_id FROM item_service_tb WHERE type = 'service'")->result();
-       
         $data['customer'] = $this->db->query("SELECT cust_id,cust_name FROM customer_tb")->result();
         $data['items']    = $this->db->query("SELECT name,item_id FROM item_service_tb WHERE type = 'product'")->result();
         $data['mode']  = 'add';
@@ -24,7 +24,6 @@ class Estimate extends CI_Controller{
         $this->load->library('session');
         $data=$_POST;
         $mode= $data['mode'];
-
         if($mode =='add'){
         $lead_array =[
             'type'  => 'ESTIMATE',
