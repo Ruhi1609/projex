@@ -90,13 +90,13 @@
 <body>
 
     <div class="sidebar">
-        <h2>Dashboard</h2>
-        <div class="menu-item active" onclick="window.location.href='estimate_list.php'">Estimates</div>
-        <div class="menu-item" onclick="window.location.href='work_orders.php'">Work Orders</div>
-        <div class="menu-item" onclick="window.location.href='payments.php'">Payments</div>
-        <div class="menu-item" onclick="window.location.href='profile.php'">Profile</div>
+        <h2>PROJEX</h2>
+        <div class="menu-item" onclick="window.location.href='<?=base_url();?>dashboard'">Dashboard</div>
+        <div class="menu-item active">Estimates</div>
+        <div class="menu-item" onclick="window.location.href='<?=base_url();?>project/quotation'">Quotation</div>
+        <div class="menu-item" onclick="window.location.href='<?=base_url();?>project/work_order'">Work Order</div>
         <hr>
-        <div class="menu-item"><a href="logout" style="color: white;">Logout</a></div>
+        <div class="menu-item"><a href="<?=base_url();?>logout" style="color: white;">Logout</a></div>
     </div>
 
     <div class="content">

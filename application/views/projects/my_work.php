@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <style>
         body {
@@ -103,19 +104,32 @@
                                 <td><?= $m->date ?></td>
                                 <td><?= $m->name ?></td>
                                 <td><?= $m->cust_name ?></td>
-                                <td><?= $m->status ?></td>
                                 <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            status
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item text-black bg-success" href="#">complete </a></li>
-                                            <li><a class="dropdown-item text-black bg-info" href="#">approved </a></li>
-                                            <li><a class="dropdown-item text-black bg-warning" href="#">pending </a></li>
-                                            <li><a class="dropdown-item text-black bg-primary" href="#">in progress </a></li>
-                                        </ul>
+                                 <?php 
+                                    $max_perc = 0; 
+                                     foreach ($percentage as $perc) {
+                                         if ($perc->work_ord_id == $m->work_ord_id) {
+                                             $max_perc = $perc->max_perc;
+                                            break;  }
+                                     }
+                                    ?>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                            style="width: <?= $max_perc ?>%;" 
+                                            aria-valuenow="<?= $max_perc ?>" aria-valuemin="0" aria-valuemax="100">
+                                            <?= $max_perc ?>%
+                                        </div>
                                     </div>
+                                </td>
+                                <td>
+                                <span class="status-display font-weight-bold"></span>
+                                    <select class="form-control status-dropdown" data-id="<?= $m->work_ord_id ?>">
+                                        <option value="Pending" <?= ($m->status == 'Pending') ? 'selected' : '' ?>>Pending</option>
+                                        <option value="Approved" <?= ($m->status == 'Approved') ? 'selected' : '' ?>>Approved</option>
+                                        <option value="Rejected" <?= ($m->status == 'Rejected') ? 'selected' : '' ?>>Rejected</option>
+                                        <option value="In Progress" <?= ($m->status == 'In Progress') ? 'selected' : '' ?>>In Progress</option>
+                                        <option value="Completed" <?= ($m->status == 'Completed') ? 'selected' : '' ?>>Completed</option>
+                                    </select>
                                 </td>
                                 <td>
                                     <div class="dropdown">
@@ -139,5 +153,74 @@
             </table>
         </div>
     </div>
+    <script>
+    // $(document).ready(function() {
+    //     $(".dropdown-menu .dropdown-item").on("click", function(e) {
+    //         e.preventDefault();
+    //         let selectedStatus = $(this).data("status"); 
+    //         $("#status-btn").text(selectedStatus); 
+    //     });
+    // });
+</script>
+<script>
+$(document).ready(function() {
+    function updateDropdownColor(selectElement) {
+        let selectedValue = selectElement.val();
+        let parentTd = selectElement.closest("td");
+
+        // Remove previous classes
+        parentTd.removeClass("bg-warning bg-info bg-danger bg-primary bg-success text-white text-dark");
+
+        // Apply color based on the selected value
+        switch (selectedValue) {
+            case "Pending":
+                parentTd.addClass("bg-warning text-dark");
+                break;
+            case "Approved":
+                parentTd.addClass("bg-info text-dark");
+                break;
+            case "Rejected":
+                parentTd.addClass("bg-danger text-white");
+                break;
+            case "In Progress":
+                parentTd.addClass("bg-primary text-white");
+                break;
+            case "Completed":
+                parentTd.addClass("bg-success text-white");
+                break;
+        }
+    }
+
+    // Apply color on page load
+    $(".status-dropdown").each(function() {
+        updateDropdownColor($(this));
+    });
+
+    // Change status display and color when selection changes
+    $(".status-dropdown").on("change", function() {
+        let selectElement = $(this);
+        let status = selectElement.val();
+        let work_ord_id = selectElement.data('id');
+
+        updateDropdownColor(selectElement);
+
+        // AJAX request to update status
+        $.ajax({
+            url: "<?= base_url('project/my_work/update_status/') ?>" + work_ord_id, 
+            type: "POST",
+            data: { work_ord_id: work_ord_id, status: status },
+            success: function(response) {
+                Swal.fire("Success!", "Status updated successfully!", "success");
+                setTimeout(function() {
+                    location.reload(); // Reload after a delay for better UX
+                }, 1000);
+            },
+            error: function(xhr, status, error) {
+                Swal.fire("Error!", "Failed to update status!", "error");
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

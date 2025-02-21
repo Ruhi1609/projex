@@ -14,7 +14,9 @@
             background-color: #f1f9ff; /* Light blue */
         }
         .container {
-            margin-top: 30px;
+            padding: 20px 30px 20px 0px;
+            max-width: 80%;
+            margin: 0 auto;
         }
         .btn-primary {
             background-color: #007bff;
@@ -47,10 +49,21 @@
         .status-pending { color: #ffc107; font-weight: bold; }
         .status-approved { color: #28a745; font-weight: bold; }
         .status-rejected { color: #dc3545; font-weight: bold; }
+        .main-container{
+            height:100vh;
+            width:100%;
+            display:flex;
+        }
+        .left-container{
+            width: 20%;
+        }
     </style>
 </head>
 <body>
-
+<div class="main-container">
+    <div class="left-container">
+        <?php $this->load->view("common/sidebar");?>
+    </div>
 <div class="container">
 
     <table class="table table-striped text-center">
@@ -83,6 +96,7 @@
                     <?php $sl_no++; endforeach; ?>
                 </tbody>
     </table>
+</div>
 </div>
 
 <!-- Modal for Adding Work Request -->

@@ -80,6 +80,15 @@
     </style>
 </head>
 <body>
+<div class="sidebar">
+        <h2>PROJEX</h2>
+        <div class="menu-item" onclick="window.location.href='<?=base_url();?>dashboard'">Dashboard</div>
+        <div class="menu-item"onclick="window.location.href='<?=base_url();?>project/estimate'">Estimates</div>
+        <div class="menu-item" onclick="window.location.href='<?=base_url();?>project/quotation'">Quotation</div>
+        <div class="menu-item active" onclick="window.location.href='<?=base_url();?>project/work_order'">Work Order</div>
+        <hr>
+        <div class="menu-item"><a href="<?=base_url();?>logout" style="color: white;">Logout</a></div>
+    </div>
     <div class="content">
         <div class="header">
             <h1>Work order List</h1>
@@ -109,7 +118,20 @@
                     <td><?= $w->date ?></td>
                     <td><?= $w->cust_name ?></td>
                     <td><?= $w->emp_name?></td>
-                    <td><?= $w->status ?></td>
+                    <?php
+                    $statusColors = [
+                        "Pending" => "yellow",
+                        "Approved" => "blue",
+                        "Rejected" => "red",
+                        "In Progress" => "blue",
+                        "Completed" => "green"
+                        ];
+
+                    $bg = isset($statusColors[$w->status]) ? $statusColors[$w->status] : "black";
+                        ?>
+                            <td>
+                                <p style="color: <?= $bg ?>; font-weight: bold;"><?= $w->status ?></p>
+                            </td>
                     <td><?= $w->amount?></td>
                     <td>
                     <div class="dropdown">

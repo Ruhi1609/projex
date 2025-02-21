@@ -71,17 +71,22 @@
                     <!-- Buttons Side by Side -->
                     <div class="d-flex gap-2">
                         <button id="start-btn" value="<?= $p->work_ord_id ?>" class="btn btn-primary btn-sm w-100">Start Work</button>
-                        <button id="stop-btn"  value="<?=$p->work_ord_id ?>" class="btn btn-danger btn-sm w-100" disabled>Stop Work</button>
+                        <button id="stop-btn"  value="<?=$p->work_ord_id ?>" class="btn btn-danger btn-sm w-100" disabled> Stop Work</button>
+                        <!-- <input type="hidden" name="job_id" class="job_id" value ="<?//=$p->job_id?>"> -->
                     </div>
 
                     <!-- Progress Bar -->
+            <?php foreach ($percentage as $per) { ?>
+
                     <div class="progress mt-3">
-                        <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                        <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: <?=$per->max_perc?>%;"  aria-valuenow="<?=$per->max_perc?>" aria-valuemin="0" aria-valuemax="100"><?=$per->max_perc?></div>
                     </div>
 
-                    <!-- Interactive Slider -->
+
                     <label for="progress-slider">Adjust Progress:</label>
-                    <input type="range" id="progress-slider" class="form-range" min="0" max="100" step="1" value="0">
+                    <input type="range" id="progress-slider" class="form-range" min="0" max="100" step="1" value="<?=$per->max_perc?>">
+            <?php } ?>
+
                 </div>
                 <!-- Materials Section at Bottom -->
                 <div class="materials mt-4">
@@ -175,28 +180,35 @@ $("#start-btn").on("click", function() {
     });
 });
 
-// Stop button functionality
 $("#stop-btn").on("click", function() {
     let work_ord_id = $(this).val();
     let progress = $("#progress-slider").val();
+    // let job_id = $(".job_id").val();
+    
     $.ajax({
-        url:"<?=base_url('project/my_work/stop')?>",
-        type:"POST",
-        data:{work_ord_id:work_ord_id, progress:  progress},
-        success:function(response){
-            Swal.fire("success!","Work stopped!","success");
-            $("#progress-slider").prop("disabled", true); 
-            $("#stop-btn").prop("disabled",true);
+        url: "<?=base_url('project/my_work/stop')?>",
+        type: "POST",
+        data: { work_ord_id: work_ord_id, progress: progress },
+        success: function(response) {
+            Swal.fire({
+                title: "Success!",
+                text: "Work stopped!",
+                icon: "success",
+                confirmButtonText: "OK"
+            }).then(() => {
+                window.location.href = "<?=base_url('project/my_work')?>"; 
+            });
+
+            $("#progress-slider").prop("disabled", true);
+            $("#stop-btn").prop("disabled", true);
             $("#start-btn").prop("disabled", false);
         },
-        error:function(){
-            Swal.fire("Error!","failed to stop work!","error");
-        } 
-
+        error: function() {
+            Swal.fire("Error!", "Failed to stop work!", "error");
+        }
     });
-    console.log(data);
-    // alert(data);
 });
+
     });
 </script>
 </body>

@@ -12,10 +12,17 @@
             margin: 0;
             min-height: 100vh;
         }
-
+        .main-container{
+            height:100vh;
+            width:100%;
+            display:flex;
+        }
+        .left-container{
+            width: 20%;
+        }
         .container {
-            padding: 20px;
-            max-width: 1200px;
+            padding: 20px 30px 20px 0px;
+            max-width: 80%;
             margin: 0 auto;
         }
 
@@ -67,6 +74,10 @@
     </style>
 </head>
 <body>
+<div class="main-container">
+    <div class="left-container">
+        <?php $this->load->view("common/sidebar");?>
+    </div>
     <div class="container">
         <!-- Search Bar and Add New Button -->
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -104,7 +115,7 @@
             </table>
         </div>
     </div>
-
+    </div>
     <script>
         function edit(cust_id){
             window.location.href = "<?=base_url()?>customer/edit/" + cust_id;

@@ -13,7 +13,7 @@
 
 
     <style>
-        body {
+       body {
             font-family: Arial, sans-serif;
             background-color: #f0f8ff;
             margin: 0;
@@ -30,11 +30,13 @@
             padding: 20px;
             height: 100vh;
         }
+
         .sidebar h2 {
             margin-bottom: 20px;
             font-size: 22px;
             text-align: center;
         }
+
         .menu-item {
             margin: 15px 0;
             cursor: pointer;
@@ -42,14 +44,17 @@
             border-radius: 5px;
             transition: background 0.3s;
         }
+
         .menu-item:hover, .menu-item.active {
             background: #0056b3;
         }
+
         .content {
             flex: 1;
             padding: 20px;
             background: #f9faff;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -70,13 +75,16 @@
             background-color: #007bff;
             color: white;
         }
+
         .table tbody tr:hover {
             background-color: #f1f8ff;
         }
+
         .btn-primary {
             background-color: #007bff;
             border: none;
         }
+
         .status-pending { color:rgb(223, 137, 75); font-weight: bold; }
         .status-approved { color: #28a745; font-weight: bold; }
         .status-rejected { color: #dc3545; font-weight: bold; }
@@ -84,6 +92,15 @@
     </style>
 </head>
 <body>
+<div class="sidebar">
+        <h2>PROJEX</h2>
+        <div class="menu-item" onclick="window.location.href='<?=base_url();?>dashboard'">Dashboard</div>
+        <div class="menu-item"onclick="window.location.href='<?=base_url();?>project/estimate'">Estimates</div>
+        <div class="menu-item active" onclick="window.location.href='<?=base_url();?>project/quotation'">Quotation</div>
+        <div class="menu-item" onclick="window.location.href='<?=base_url();?>project/work_order'">Work Order</div>
+        <hr>
+        <div class="menu-item"><a href="<?=base_url();?>logout" style="color: white;">Logout</a></div>
+    </div>
     <div class="content">
         <div class="header">
             <h1>Quotation List</h1>

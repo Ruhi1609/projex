@@ -97,10 +97,9 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h4>Customer Dashboard</h4>
+        <h4 class="text-center"><b>PROJEX</b></h4>
         <a href="<?= base_url(); ?>project/dashboard">Home</a>
-        <a href="<?= base_url(); ?>project/work_requests">Work Requests</a>
-        <a href="<?= base_url(); ?>project/orders">Orders</a>
+        <a href="<?= base_url(); ?>project/cus_work_status">Work Status</a>
         <a href="<?= base_url(); ?>project/profile">Profile</a>
         <a href="<?= base_url(); ?>login/log_out">Logout</a>
     </div>
