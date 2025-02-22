@@ -24,7 +24,7 @@ public function login_process()
             }
              elseif ($r->type =='employee')
             {
-                redirect('project/My_work',$res);
+                redirect('employee_dashboard',$res);
             }
             else
             {

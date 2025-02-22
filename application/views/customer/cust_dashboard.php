@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f8ff;
@@ -91,6 +94,11 @@
                 margin-left: 0;
             }
         }
+    .slider-img {
+        height: 125mm !important; /* Set height to 30px */
+        object-fit: cover; /* Ensures the image fills the space without distortion */
+        border-radius: 10px;
+    }
     </style>
 </head>
 <body>
@@ -101,17 +109,39 @@
         <a href="<?= base_url(); ?>project/dashboard">Home</a>
         <a href="<?= base_url(); ?>project/cus_work_status">Work Status</a>
         <a href="<?= base_url(); ?>project/profile">Profile</a>
-        <a href="<?= base_url(); ?>login/log_out">Logout</a>
+        <a href="<?= base_url(); ?>logout">Logout</a>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
         <?php foreach($customer_details as $c) {?>
+        <h2 class="text">WELCOME <strong><?=strtoupper($c->cust_name)?></strong></h2>
+        <h2 class="text"><strong> Our Services</strong></h2>
+        <div id="imageSlider" class="carousel slide" data-bs-ride="carousel " style="border-radius: 10px;border:2px solid #a5b6da; padding :8px;">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+        <img src="<?= base_url('images/img1.jpg') ?>" class="d-block w-100 slider-img" alt="Slide 1">
+        </div>
+        <div class="carousel-item">
+            <img src="<?= base_url('images/img2.jpg') ?>" class="d-block w-100 slider-img" alt="Slide 2">
+        </div>
+        <div class="carousel-item">
+            <img src="<?= base_url('images/img3.jpg') ?>" class="d-block w-100 slider-img" alt="Slide 3">
+        </div>
+        <div class="carousel-item">
+            <img src="<?= base_url('images/img4.jpg') ?>" class="d-block w-100 slider-img" alt="Slide 3">
+        </div>
+        <div class="carousel-item">
+            <img src="<?= base_url('images/img7.jpg') ?>" class="d-block w-100 slider-img" alt="Slide 3">
+        </div>
+    </div>
+</div>
+        <hr style="border : 1px solid gyey;">
+
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="text-primary">Work Requests</h2>
+            <h2 class="text">Work Requests</h2>
             <button class="btn btn-add-new" data-bs-toggle="modal" data-bs-target="#addWorkRequestModal">+ New Work Request</button>
         </div>
-        <h2 class="text-primary">Welcome <?=$c->cust_name?></h2>
 
         <div class="table-container">
             <table class="table table-bordered table-striped text-center">
@@ -194,7 +224,15 @@
         function delete_item(work_rqst_id){
             window.location.href ="<?=base_url()?>project/work_request/delete/" + work_rqst_id;
         }
-    </script>                             
+    </script> 
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        new bootstrap.Carousel(document.getElementById("imageSlider"), {
+            interval: 2000, // Auto-slide every 3 seconds
+            ride: "carousel"
+        });
+    });
+</script>                            
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

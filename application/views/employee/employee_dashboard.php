@@ -84,19 +84,15 @@
 <body>
 
 <div class="sidebar">
-    <h4 class="text-center">Employee Dashboard</h4>
-    <a href="#completedWorks">Works Completed</a>
-    <a href="#pendingWorks">Pending Works</a>
-    <a href="#paymentHistory">Payment History</a>
-    <a href="#notifications">Notifications</a>
-    <a href="#settings">Settings</a>
-    <a href="<?= base_url('login/log_out'); ?>">Logout</a>
+    <h4 class="text-center"><strong>PROJEX</strong></h4>
+    <a href="<?=base_url();?>project/my_work">My Works</a>
+    <a href="<?= base_url('logout'); ?>">Logout</a>
 </div>
 
 <div class="content">
     <?php foreach ($employee_details as $e) { ?>
         <div class="header">
-            <h3>Welcome, <?= $e->emp_name ?>!</h3>
+            <h3>WELCOME, <strong><?= strtoupper($e->emp_name ) ?> </strong>!</h3>
             <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-icon">
         </div>
 
@@ -105,7 +101,7 @@
             <h4>Works Completed</h4>
             <div class="card">
                 <div class="card-body">
-                    <p>Total Completed Works: <strong>15</strong></p>
+                    <p>Total Completed Works: <strong><?=$completed_work?></strong></p>
                 </div>
             </div>
         </div>
@@ -116,7 +112,7 @@
         <h4>Pending Works</h4>
         <div class="card">
             <div class="card-body">
-                <p>Total Pending Works: <strong>5</strong></p>
+                <p>Total Pending Works: <strong><?=$pending_work?></strong></p>
             </div>
         </div>
     </div>

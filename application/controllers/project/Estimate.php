@@ -93,7 +93,8 @@ class Estimate extends CI_Controller{
             $this->db->update('lead_item', $row,array("lead_id" => $lead_id));
         }
     }
-         $data=$this->load->view('projects/estimate/list', $data); 
+        //  $data=$this->load->view('projects/estimate/list', $data); 
+        redirect("project/Estimate");
 
     }
     public function get_estimates()

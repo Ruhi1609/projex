@@ -155,8 +155,9 @@ class Work_order extends CI_Controller{
         // echo '<pre>';print_r($data); exit();
         $this->load->view('projects/work_order/form',$data);
     }
-function delete($lead_id=0){
-    $this->db->query("DELETE  FROM lead_tb where lead_id = $lead_id");
+function delete($work_ord_id=0){
+    $this->db->query("DELETE  FROM work_order_tb where work_ord_id = $work_ord_id");
+    $this->db->query("DELETE  FROM work_ord_job_tb where work_ord_id = $work_ord_id");
     $this->index();
 
 }  

@@ -24,6 +24,7 @@ public function sign_up(){
     // Prepare user details
     $userdetails = [
         "gender" => $data['gender'],
+        "email"  =>$data['email'],
         "phone" => $data['contact'],
         "dob" => $data['dob'],
         "address" => $data['address'],
@@ -46,8 +47,7 @@ public function sign_up(){
     $this->db->insert("customer_tb", $customer);
 
     if ($result) {
-        // If the insert was successful, redirect to login page
-        $this->load->view("login");
+        redirect("login");
     }
 }
 
