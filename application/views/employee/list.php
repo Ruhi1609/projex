@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee List</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -82,15 +83,13 @@
         <?php $this->load->view("common/sidebar");?>
     </div>
     <div class="container">
-        <!-- Search Bar and Add New Button -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <input type="text" class="form-control search-bar" id="searchBar" placeholder="Search employee...">
+        <input type="text" class="form-control search-bar" id="searchBar" placeholder="Search employee..." onkeyup="searchTable()">
             <a href="<?=base_url();?>employee/add"><button class="btn btn-add-new">+ Add New Employee</button></a>
         </div>
 
-        <!-- Employee List Table -->
         <div class="table-container">
-            <table class="table table-bordered table-striped">
+        <table id="EmployeeTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th scope="col">S.No</th>
@@ -118,7 +117,7 @@
                         <td><?= $emp->salary ?></td> 
                         <td>
                             <button class="btn btn-edit" onclick="edit(<?= $emp->emp_id ?>)">Edit</button>
-                            <button class="btn btn-delete" onclick="delete_item(<?= $emp->emp_id ?>)">Delete</button>
+                            <button class="btn btn-delete" onclick="confirmDelete('<?= base_url();?>employee/delete/<?= $emp->emp_id ?>')">Delete</button>
                         </td>  
                     </tr>
                     <?php $sl_no++; } ?>
@@ -132,11 +131,45 @@
         function edit(emp_id){
             window.location.href = "<?=base_url()?>employee/edit/" + emp_id;
         }
+     </script>
+     <script>
+        function searchTable() {
+    var input, filter, table, tr, td, i, j, txtValue;
+    input = document.getElementById("searchBar");
+    filter = input.value.toLowerCase();
+    table = document.getElementById("EmployeeTable");
+    tr = table.getElementsByTagName("tr");
 
-        function delete_item(emp_id){
-            window.location.href ="<?=base_url()?>employee/delete/" + emp_id;
+    for (i = 1; i < tr.length; i++) { 
+        tr[i].style.display = "none"; 
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                }
+            }
         }
-    </script>
+    }
+}
+function confirmDelete(deleteUrl) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = deleteUrl;
+        }
+    });
+}
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

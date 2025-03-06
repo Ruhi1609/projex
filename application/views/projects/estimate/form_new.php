@@ -97,7 +97,17 @@
             $final_service_amt  =$l->price;
             $service_id         =$l->service_id;
             $lead_id            =$l->lead_id;
-        ?><?php }}?>
+        ?>
+        <?php }}?>
+        <?php
+        if(isset($request)){
+        foreach ($request as $r) {
+            $cust_id            =$r->cust_id;
+            $service_id          =$r->item_id;
+            $final_service_amt  =$r->price;         
+        ?>
+        <?php }}?>
+        
     <h4 class="mb-3">Create Estimate</h4>
     <form class="d-flex flex-column" action="<?=base_url()?>project/estimate/process" method="post">
         <div class="form-wrapper d-flex">

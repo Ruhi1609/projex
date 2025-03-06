@@ -9,9 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-
-
     <style>
        body {
             font-family: Arial, sans-serif;
@@ -89,6 +86,10 @@
         .status-approved { color: #28a745; font-weight: bold; }
         .status-rejected { color: #dc3545; font-weight: bold; }
 
+        #searchBar {
+            max-width: 250px;
+         }
+
     </style>
 </head>
 <body>
@@ -102,9 +103,12 @@
         <div class="menu-item"><a href="<?=base_url();?>logout" style="color: white;">Logout</a></div>
     </div>
     <div class="content">
-        <div class="header">
-            <h1>Quotation List</h1>
-            <a href="<?=base_url();?>project/quotation/add"><button class="btn btn-primary">+ New Quotation</button></a>
+        <h1>QUOTATION</h1>
+        <div class="header d-flex justify-content-between align-items-center mb-3">
+            <input type="text" class="form-control me-2" id="searchBar" placeholder="Search quotations..." onkeyup="searchTable()">
+            <a href="<?=base_url();?>project/quotation/add">
+                <button class="btn btn-primary">+ New Quotation</button>
+            </a>
         </div>
         <div class="table-container">
         <table class="table table-bordered table-hover text-center">
@@ -129,9 +133,9 @@
                 } else { ?> <?php $status = '<i class="fa-solid fa-clock"></i> QUOTATION';$bg ="orange"; } ?>
                 <tr>
                     <td><?=$slno?></td>
-                    <td><?= $q->lead_number ?></td>
-                    <td><?= $q->cust_name ?></td>
-                    <td><?= $q->date ?></td>
+                    <td onclick="quotation_preview(<?=$q->lead_id?>)"><?= $q->lead_number ?></td>
+                    <td onclick="quotation_preview(<?=$q->lead_id?>)"><?= $q->cust_name ?></td>
+                    <td onclick="quotation_preview(<?=$q->lead_id?>)"><?= $q->date ?></td>
                     <td> <p style=" color:<?=$bg?>; font-weight:bold;"><?= $status ?></p></td>
                     <td><?=$q->amount?></td>
                     <td>
@@ -142,8 +146,6 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/edit/<?= $q->lead_id ?>">✏ Edit</a></li>
                                 <li><a class="dropdown-item" href="javascript:void(0);"onclick="confirmDelete('<?= base_url('project/quotation/delete/') . $q->lead_id ?>')">🗑 Delete</a></li>
-
-                                <!-- <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?//= base_url();?>project/quotation/delete/<?//= $q->lead_id ?>')">🗑 Delete</a></li> -->
                                 <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmQuotation(<?= $q->lead_id ?>)">✔ Confirm Quotation</a></li>
                                 <li><a class="dropdown-item" href="javascript:void(0);" onclick="undoQuotation(<?= $q->lead_id ?>)">↩️ Undo Quotation</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/work_order/add/<?= $q->lead_id ?>">📄 Convert to Work Order</a></li>
@@ -162,8 +164,60 @@
         <?php endif; ?>
     </tbody>
 </table>
+<div class="modal fade" id="Quotation_modal" tabindex="-1" aria-labelledby="QuotationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <h5 class="modal-title" id="EstimateModalLabel">Estimate Preview</h5> -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
         </div>
     </div>
+</div>
+        </div>
+    </div>
+    <script>
+          function searchTable() {
+    var input, filter, table, tr, td, i, j, txtValue;
+    input = document.getElementById("searchBar");
+    filter = input.value.toLowerCase();
+    table = document.querySelector(".table tbody");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        tr[i].style.display = "none"; 
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                }
+            }
+        }
+    }
+}
+    function quotation_preview(lead_id = 0) {
+    $('#Quotation_modal').modal('show');
+    var path = "<?=base_url();?>project/quotation/preview/" + lead_id;
+
+    $.post(path, function(result) {
+        $('#Quotation_modal .modal-body').html(result);
+    }).fail(function() {
+        $('#Quotation_modal .modal-body').html('<p>Error loading data. Please try again.</p>');
+    });
+}
+function printContent() {
+    window.print();
+}
+</script>
+<script>
+        function edit(lead_id){
+            window.location.href = "<?=base_url();?>project/estimate/edit/" + lead_id;
+        }
+    </script>
     <script>
         function edit(lead_id){
             window.location.href = "<?=base_url();?>project/quotation/edit/" + lead_id;

@@ -1,7 +1,7 @@
 <?php
 class Signup extends CI_Controller {   
 public function index(){
-    $this->load->view("sign_up");
+    $this->load->view("signup_new");
 }
 public function sign_up(){
     $data = $_POST;
@@ -50,5 +50,6 @@ public function sign_up(){
         redirect("login");
     }
 }
+
 
 }

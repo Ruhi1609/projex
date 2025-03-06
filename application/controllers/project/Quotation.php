@@ -183,5 +183,20 @@ public function status()
         echo json_encode(["status" => "error", "message" => "Invalid lead ID or confirmation value"]);
     }
 }
+function preview($lead_id=0)
+{
+    $data['lead'] = $this->db->query("
+    SELECT L.*,C.cust_name,CO.email,CO.phone,CO.address,I.name as service_name,I.price
+    FROM lead_tb L 
+    JOIN customer_tb C ON C.cust_id = L.cust_id 
+    LEFT OUTER JOIN item_service_tb I ON I.item_id = L.service_id 
+    LEFT OUTER JOIN contact_tb CO ON CO.contact_id = C.contact_id 
+    WHERE L.lead_id = $lead_id")->result();
+    $data['lead_item']= $this->db->query("
+    SELECT LI.*,I.name FROM lead_item LI LEFT OUTER JOIN item_service_tb I ON I.item_id = LI.item_id 
+    WHERE LI.lead_id= $lead_id")->result();
+    // echo '<pre>';print_r($data);exit();
+    $this->load->view('projects/quotation/preview',$data);
+}
 
 }

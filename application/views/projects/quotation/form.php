@@ -98,7 +98,7 @@
             $service_id  =$l->service_id;
             $lead_id =$l->lead_id;          
         ?><?php }}?>
-    <h4 class="mb-3">Create Quotation</h4>
+              <h4 class="mb-3">Create Quotation</h4>
     <form class="d-flex flex-column" action="<?=base_url()?>project/quotation/process" method="post">
         <div class="form-wrapper d-flex">           
             <div class="left-section">
@@ -190,8 +190,7 @@
  
     </tbody>
 </table>
-</div>
-                
+</div> 
                 <div class="bottom-section">
                     <div class="row mt-3">
                         <div class="col-md-6">
@@ -275,10 +274,6 @@ function get_service_details(item_id){
         updateAmount();
     })
 <?php } ?>
-
-
-
-
 function addItemToTable(item) {
     var tableBody = $("#itemTableBody");
     if ($("#row_" + item.item_id).length) {

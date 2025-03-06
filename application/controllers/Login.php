@@ -1,7 +1,7 @@
 <?php
 class Login extends CI_Controller {   
 public function index(){
-    $this->load->view("login");
+    $this->load->view("login_new");
 }
 public function login_process()
 {
@@ -32,11 +32,11 @@ public function login_process()
             }
         } else {
             $data['error_message'] = 'Invalid password. Please try again.';
-            $this->load->view("login", $data);
+            $this->load->view("login_new", $data);
         }
     } else {
         $data['error_message'] = 'Email not found. Please check your credentials.';
-        $this->load->view("login", $data);
+        $this->load->view("login_new", $data);
     }
 }
 

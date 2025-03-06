@@ -84,7 +84,15 @@
                         <td><?= $cust->cust_name?></td>
                         <td><?= $cust->name ?></td>
                         <td><?= $cust->notes ?></td>
-                        <td class="status-<?= strtolower($cust->status) ?>"><?= $cust->status ?></td>
+                        <td class="status-<?= strtolower($cust->status) ?>"><?= $cust->status ?>
+                        <?php if (strtolower($cust->status) === 'approved') : ?>
+        <p>
+                                <a href="<?= base_url(); ?>project/estimate/add/<?=$cust->work_rqst_id?>" class="btn btn-link">
+                                    <i class="fa fa-file"></i> Make Estimate
+                                </a>
+                            </p>
+                        <?php endif; ?>
+                        </td>
                         <td>
                         <select class="form-control status-dropdown" data-id="<?= $cust->work_rqst_id ?>">
                          <option value="Pending" >Pending</option>

@@ -161,4 +161,14 @@ function delete($work_ord_id=0){
     $this->index();
 
 }  
+function preview($work_ord_id=0)
+{
+    $data['lead'] = $this->db->query("SELECT W.*,C.cust_name,I.name as service_name,I.price,CO.email,CO.phone,CO.address FROM work_order_tb W LEFT OUTER JOIN customer_tb C ON C.cust_id = W.cust_id  LEFT OUTER JOIN item_service_tb I ON I.item_id = W.service_id LEFT OUTER JOIN contact_tb CO ON CO.contact_id =C.contact_id  WHERE W.work_ord_id = $work_ord_id")->result();
+    $data['lead_item']= $this->db->query("
+    SELECT LI.*,I.name FROM lead_item LI LEFT OUTER JOIN item_service_tb I ON I.item_id = LI.item_id 
+    WHERE LI.lead_id= $work_ord_id")->result();
+    // echo '<pre>';print_r($data);exit();
+    $this->load->view('projects/work_order/preview',$data);
+}
+
 }
