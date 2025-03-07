@@ -6,7 +6,10 @@
     <title>Customer Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         
         body {
@@ -95,15 +98,14 @@
             }
         }
     .slider-img {
-        height: 125mm !important; /* Set height to 30px */
-        object-fit: cover; /* Ensures the image fills the space without distortion */
+        height: 125mm !important; 
+        object-fit: cover; 
         border-radius: 10px;
     }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <h4 class="text-center"><b>PROJEX</b></h4>
         <a href="<?= base_url(); ?>project/dashboard">Home</a>
@@ -112,7 +114,6 @@
         <a href="<?= base_url(); ?>logout">Logout</a>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <?php foreach($customer_details as $c) {?>
         <h2 class="text">WELCOME <strong><?=strtoupper($c->cust_name)?></strong></h2>
@@ -140,7 +141,9 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text">Work Requests</h2>
-            <button class="btn btn-add-new" data-bs-toggle="modal" data-bs-target="#addWorkRequestModal">+ New Work Request</button>
+            <!-- <button class="btn btn-add-new" data-bs-toggle="modal" data-bs-target="#addWorkRequestModal">+ New Work Request</button> -->
+            <button class="btn btn-add btn-success" onclick="addItem()">Add Work Request</button>
+
         </div>
 
         <div class="table-container">
@@ -172,8 +175,8 @@
 
                         <td class="status-<?= strtolower($cust->status) ?>" style="font-weight:bold; color:<?=$bg?>"><?= $cust->status ?></td>
                         <td>
-                        <button class="btn btn-edit btn-primary" onclick="editItem('<?= $cust->name ?>', '<?= $cust->notes ?>')">Edit</button>
-                            <button class="btn btn-delete" onclick="delete_item(<?=$cust->work_rqst_id?>)">Delete</button>
+                        <button class="btn btn-edit btn-primary" onclick="editItem('<?=$cust->work_rqst_id?>','<?= $cust->item_id ?>', '<?= $cust->notes ?>')">Edit</button>
+                        <button class="btn btn-delete" onclick="confirmDelete('<?= base_url();?>project/work_request/delete/<?= $cust->work_rqst_id ?>','<?=$cust->status?>')">Delete</button>
                         </td> 
                     </tr>
                     <?php $sl_no++; endforeach; ?>
@@ -183,56 +186,123 @@
         <?php }?>
     </div>
 
-    <!-- Modal for Adding Work Request -->
     <div class="modal fade" id="addWorkRequestModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-primary">Add New Work Request</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="workRequestForm" action="<?=base_url();?>project/work_request/process" method="post">
-                        <div class="form-group mb-3">
-                            <label>Service Name</label>
-                            <select id="serviceName" name="service_id" class="form-control" required>
-                                <option value="">Select Service</option>
-                                <?php foreach ($services as $service): ?>
-                                    <option value="<?= $service->item_id ?>"><?= $service->name ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label>Notes</label>
-                            <textarea id="notes" name="notes" class="form-control" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Save</button>
-                    </form>
-                </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Add Work Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="workRequestForm" method="post">
+                    <div class="mb-3">
+                        <label for="serviceName" class="form-label">Service Name</label>
+                        <select id="serviceName" name="service_id" class="form-control" required>
+                            <option value="">Select Service</option>
+                            <?php foreach ($services as $service): ?>
+                                <option value="<?= $service->item_id ?>"><?= $service->name ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea id="notes" class="form-control" name="notes" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
        
     <script>
-    function editItem(name, notes) {
-        $('#serviceName').val(name);
-        $('#notes').val(notes);
+    const base_url = '<?= base_url(); ?>';
 
-        $('#addWorkRequestModal').modal('show');
+function addItem() {
+    const form = document.getElementById('workRequestForm');
+    form.action = `${base_url}project/work_request/process/`;
+
+    document.getElementById('modalTitle').textContent = 'Add Work Request';
+    document.getElementById('serviceName').selectedIndex = 0; // Default to 'Select Service'
+    document.getElementById('notes').value = '';
+
+    const modal = new bootstrap.Modal(document.getElementById('addWorkRequestModal'));
+    modal.show();
+}
+
+function editItem(workRqstId, itemId, notes) {
+    const form = document.getElementById('workRequestForm');
+    form.action = `${base_url}project/work_request/process/${workRqstId}`;
+
+    document.getElementById('modalTitle').textContent = 'Edit Work Request';
+
+    const serviceDropdown = document.getElementById('serviceName');
+    serviceDropdown.value = itemId ? itemId : "";
+    document.getElementById('notes').value = notes;
+
+    const modal = new bootstrap.Modal(document.getElementById('addWorkRequestModal'));
+    modal.show();
+}
+
+
+    function confirmDelete(work_rqst_id,status) {
+        if (status.toLowerCase() === 'approved') {
+        Swal.fire({
+            title: 'Deletion Blocked',
+            text: 'You cannot delete this request as it is already approved.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6'
+        });
+        return;
     }
-
-        function delete_item(work_rqst_id){
-            window.location.href ="<?=base_url()?>project/work_request/delete/" + work_rqst_id;
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(work_rqst_id, {
+                method: 'GET'
+            }).then(response => {
+                if (response.ok) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your request has been deleted.',
+                        'success'
+                    ).then(() => {
+                        location.reload(); 
+                    });
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'There was a problem deleting the request.',
+                        'error'
+                    );
+                }
+            }).catch(() => {
+                Swal.fire(
+                    'Error!',
+                    'Unable to process the request.',
+                    'error'
+                );
+            });
         }
-    </script> 
-    <script>
+    });
+}
+   
     document.addEventListener("DOMContentLoaded", function() {
         new bootstrap.Carousel(document.getElementById("imageSlider"), {
-            interval: 2000, // Auto-slide every 3 seconds
+            interval: 3000, 
             ride: "carousel"
         });
     });
-</script>                            
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</script>
 </body>
 </html>

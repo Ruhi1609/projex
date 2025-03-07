@@ -149,7 +149,7 @@
                             <ul class="dropdown-menu">
                                 <!-- <li><a class="dropdown-item" href="<?//= base_url();?>project/work_order/edit/<?//= $w->work_ord_id ?>">✏ Edit</a></li> -->
                                 <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?= base_url();?>project/work_order/delete/<?= $w->work_ord_id ?>')">🗑 Delete</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url();?>project/work_assign/add/<?= $w->work_ord_id ?>">📄 assign Work</a></li>
+                                <li><a class="dropdown-item" href="<?=base_url();?>project/work_assign/add/<?= $w->work_ord_id ?>">📄 assign Work</a></li>
                                 <li><a class="dropdown-item" href="#">📧 Send to Customer</a></li>
                             </ul>
                         </div>

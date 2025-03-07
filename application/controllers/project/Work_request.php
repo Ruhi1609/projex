@@ -7,7 +7,7 @@ class Work_request extends CI_Controller {
 
     $this->load->view('Projects/work_request',$data);
     }
-     function process(){
+     function process($work_rqst_id = 0){
         $this->load->library('session');
         $data=$_POST;
         $login_id = $this->session->userdata('login_id');
@@ -18,7 +18,13 @@ class Work_request extends CI_Controller {
                 "notes"   => $data['notes'],
                 "cust_id" => $cust_id
             ];
-            $this->db->insert("work_request", $work_request);
+            if($work_rqst_id){
+                $this->db->update("work_request", $work_request,array('work_rqst_id'=>$work_rqst_id));
+
+            }else{
+                $this->db->insert("work_request", $work_request);
+
+            }
             redirect('Cust_dashboard');
 
     }
