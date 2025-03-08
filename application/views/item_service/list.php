@@ -109,7 +109,7 @@
                         <td><?= $i->quantity ?></td>
                         <td>
                             <button class="btn btn-edit" onclick="edit(<?= $i->item_id ?>)">Edit</button>
-                            <button class="btn btn-delete" onclick="confirmDelete('<?= base_url();?>item_service/delete/<?= $i->item_id ?>')">Delete</button>
+                            <button class="btn btn-delete" onclick="confirmDelete('<?= base_url();?>items_service/delete/<?= $i->item_id ?>')">Delete</button>
                         </td>  
                     </tr>
                     <?php $sl_no++; } ?>
@@ -144,7 +144,7 @@
     }
 }
 
-        function confirmDelete(deleteUrl) {
+function confirmDelete(deleteUrl) {
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -159,6 +159,7 @@
         }
     });
 }
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>

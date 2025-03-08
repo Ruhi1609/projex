@@ -33,6 +33,8 @@ class Estimate extends CI_Controller{
         $this->load->library('session');
         $data=$_POST;
         $mode= $data['mode'];
+        // echo '<pre>';print_r($data);exit();
+
         if($mode =='add'){
         $lead_array =[
             'type'  => 'ESTIMATE',
@@ -112,8 +114,9 @@ class Estimate extends CI_Controller{
         return $query->result();
     }
     public function delete_estimate($lead_id) {
-        $this->db->where('lead_id', $lead_id);
-        $this->db->delete('lead_tb'); 
+        $this->db->query("DELETE  FROM lead_tb where lead_id = $lead_id");
+        $this->db->query("DELETE  FROM lead_item where lead_id = $lead_id");
+        redirect("project/estimate");
     }
     function edit($lead_id){
         $data['lead'] = $this->db->query("SELECT L.*,C.cust_name,I.item_id,I.price FROM lead_tb L JOIN customer_tb C ON C.cust_id = L.cust_id LEFT OUTER JOIN lead_item LI ON LI.lead_id = L.lead_id LEFT OUTER JOIN item_service_tb I ON I.item_id = LI.item_id  WHERE L.lead_id = $lead_id")->result();

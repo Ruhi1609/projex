@@ -153,7 +153,7 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/estimate/edit/<?= $lead->lead_id ?>">✏ Edit</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?= base_url();?>project/estimate/delete/<?= $lead->lead_id ?>')">🗑 Delete</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('<?= base_url();?>project/estimate/delete_estimate/<?= $lead->lead_id ?>')">🗑 Delete</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/add/<?=$lead->lead_id?>">🔄 Convert to Quotation</a></li>
                                 <li><a class="dropdown-item" href="#">📄 Convert to Work Order</a></li>
                                 <li><a class="dropdown-item" href="#">📧 Send to Customer</a></li>

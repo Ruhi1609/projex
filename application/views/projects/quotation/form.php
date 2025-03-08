@@ -294,7 +294,7 @@ function addItemToTable(item) {
         <td>
             <input type="text" name="amount[]" class="form-control amount" value="${item.price}" readonly>
         </td>
-        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(${item.item_id})">Remove</button></td>
+        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow('${item.item_id}')">Remove</button></td>
     </tr>
 `;
 

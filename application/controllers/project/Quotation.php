@@ -4,7 +4,7 @@ class Quotation extends CI_Controller{
     {
         $data['quotation'] = $this->db->query("SELECT L.*,C.cust_name FROM lead_tb L LEFT OUTER JOIN customer_tb C ON C.cust_id = L.cust_id WHERE L.type='QUOTATION'")->result();
         // echo '<pre>';print_r($data);exit();
-   $this->load->view('projects/quotation/list',$data);
+   $this->load->view('projects/quotation/list_new',$data);
     }
 
     public function add($id=0)
@@ -49,7 +49,7 @@ class Quotation extends CI_Controller{
         $this->load->library('session');
         $data=$_POST;
         $mode=$data['mode'];
-        // echo '<prev>';print_r($data);exit();
+        // echo '<pre>';print_r($data);
         if($mode== 'add')
         {
             $lead_array= [
@@ -67,6 +67,7 @@ class Quotation extends CI_Controller{
             $lead_id= $this->db->insert_id();
             $lead_items=[];
             $item_ids = $data['item_id'];
+            // echo print_r($item_ids);
             $quantities =$data['quantity'];
             $amounts =$data['amount'];
             $price =$data['price'];
@@ -80,6 +81,7 @@ class Quotation extends CI_Controller{
                     'price' =>$price[$key]
             ];
             foreach($lead_items as $row)
+            // print_r($lead_items);exit();
             $this->db->insert('lead_item',$row);
 
         }
@@ -155,8 +157,8 @@ class Quotation extends CI_Controller{
         $lead = $this->db->get_where('lead_tb', ['lead_id' => $lead_id])->row();
     
         if ($lead) {
-            $this->db->where('lead_id', $lead_id);
-            $this->db->delete('lead_tb');
+            $this->db->query("DELETE  FROM lead_tb where lead_id = $lead_id");
+            $this->db->query("DELETE  FROM lead_item where lead_id = $lead_id");
             redirect('project/quotation?deleted=success'); 
         } else {
             redirect('project/quotation?deleted=error');

@@ -53,7 +53,6 @@ class Items_service extends CI_Controller {
     function delete($item_id=0){
         $this->db->query("DELETE  FROM item_service_tb where item_id=$item_id");
         $this->index();
-
     }
    
 }
