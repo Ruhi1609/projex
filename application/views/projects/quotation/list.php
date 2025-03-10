@@ -145,7 +145,7 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/quotation/edit/<?= $q->lead_id ?>">✏ Edit</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);"onclick="confirmDelete('<?= base_url('project/quotation/delete/') . $q->lead_id ?>')">🗑 Delete</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);"onclick="confirmDelete('<?= base_url('project/quotation/delete/') . $q->lead_id ?>','<?=$q->confirm?>')">🗑 Delete</a></li>
                                 <li><a class="dropdown-item" href="javascript:void(0);" onclick="confirmQuotation(<?= $q->lead_id ?>)">✔ Confirm Quotation</a></li>
                                 <li><a class="dropdown-item" href="javascript:void(0);" onclick="undoQuotation(<?= $q->lead_id ?>)">↩️ Undo Quotation</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url();?>project/work_order/add/<?= $q->lead_id ?>">📄 Convert to Work Order</a></li>
@@ -199,18 +199,44 @@
         }
     }
 }
-    function quotation_preview(lead_id = 0) {
+
+function quotation_preview(lead_id = 0) {
     $('#Quotation_modal').modal('show');
+
     var path = "<?=base_url();?>project/quotation/preview/" + lead_id;
 
     $.post(path, function(result) {
-        $('#Quotation_modal .modal-body').html(result);
+        $('#Quotation_modal .modal-body').html(result); 
     }).fail(function() {
         $('#Quotation_modal .modal-body').html('<p>Error loading data. Please try again.</p>');
     });
 }
-function printContent() {
-    window.print();
+$(document).ready(function() {
+            $('#Quotation_modal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+        });
+function printModalContent() {
+    var modalContent = document.querySelector("#Quotation_modal .modal-body").innerHTML;
+    
+    var newWin = window.open('', '', 'width=800, height=600');
+    newWin.document.write(`
+        <html>
+        <head>
+            <title>Print Estimate</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .modal-body { text-align: center; }
+                .hidden-print { display: none !important; }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+            ${modalContent}
+        </body>
+        </html>
+    `);
+    newWin.document.close();
 }
 </script>
 <script>
@@ -241,7 +267,17 @@ $(document).ready(function() {
 });
 
 // Confirm delete function
-function confirmDelete(deleteUrl) {
+function confirmDelete(deleteUrl,status) {
+    if (status == '1') {
+        Swal.fire({
+            title: 'Deletion Blocked',
+            text: 'You cannot delete this quotation  as it is already confirmed.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6'
+        });
+        return;
+    }
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",

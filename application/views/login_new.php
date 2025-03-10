@@ -163,12 +163,10 @@
     <div class="image-container"></div>
 
     <script>
-        // Toggle Password Visibility
         const togglePassword = document.getElementById('togglePassword');
         const passwordField = document.getElementById('password');
 
         togglePassword.addEventListener('click', function () {
-            // Toggle the password visibility
             const type = passwordField.type === 'password' ? 'text' : 'password';
             passwordField.type = type;
             

@@ -102,21 +102,53 @@
         object-fit: cover; 
         border-radius: 10px;
     }
+    .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+        }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
         <h4 class="text-center"><b>PROJEX</b></h4>
-        <a href="<?= base_url(); ?>project/dashboard">Home</a>
+        <!-- <a href="<?//= base_url(); ?>project/dashboard">Home</a> -->
         <a href="<?= base_url(); ?>project/cus_work_status">Work Status</a>
-        <a href="<?= base_url(); ?>project/profile">Profile</a>
+        <a href="<?= base_url(); ?>cust_dashboard/view_profile">Profile</a>
         <a href="<?= base_url(); ?>logout">Logout</a>
     </div>
 
     <div class="main-content">
         <?php foreach($customer_details as $c) {?>
-        <h2 class="text">WELCOME <strong><?=strtoupper($c->cust_name)?></strong></h2>
+            <div class="header">
+            <h3>WELCOME, <strong><?= strtoupper($c->cust_name ) ?> </strong>!</h3>
+            <?php
+                $base_path = 'profile/';
+                $image_path = '';
+
+                if (file_exists($base_path . $c->cust_id . '.png')) {
+                    $image_path = base_url($base_path . $c->cust_id . '.png');
+                } elseif (file_exists($base_path . $c->cust_id . '.jpg')) {
+                    $image_path = base_url($base_path . $c->cust_id . '.jpg');
+                } elseif (file_exists($base_path . $c->cust_id . '.jpeg')) {
+                    $image_path = base_url($base_path . $c->cust_id . '.jpeg');
+                } else {
+                    $image_path = base_url('profile/default.png'); 
+                }
+                ?>
+
+                <img src="<?= $image_path; ?>" alt="Profile Picture" class="profile-icon" />
+
+        </div>
         <h2 class="text"><strong> Our Services</strong></h2>
         <div id="imageSlider" class="carousel slide" data-bs-ride="carousel " style="border-radius: 10px;border:2px solid #a5b6da; padding :8px;">
     <div class="carousel-inner">

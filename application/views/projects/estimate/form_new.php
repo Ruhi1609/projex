@@ -115,6 +115,8 @@
             <div class="left-section">
                 <input type="hidden" value="<?=$lead_id?>" name="lead_id" >
                 <input type="hidden" value="<?=$mode?>" name="mode">
+                <input type="hidden" name="removed_items" id="removed_items" value="[]">
+
                 <div class="row">
                     <div class="col-md-6">
                         <label for="estimate_number" class="form-label">Estimate Number</label>
@@ -273,10 +275,14 @@ function get_service_details(item_id){
 <?php if($mode == 'edit'){?>
     $(window).on('load', function(){
         get_service_details(<?=$service_id?>);
-        updateEstimateAmount();
-        updateAmount();
-    })
+        updateEstimateAmount(); 
+        $(".quantity").each(function () {
+            let price = $(this).closest("tr").find("input[name='price[]']").val();
+            updateAmount(this, price);
+        });
+    });
 <?php } ?>
+
 function addItemToTable(item) {
     var tableBody = $("#itemTableBody");
     if ($("#row_" + item.item_id).length) {
@@ -307,43 +313,63 @@ function addItemToTable(item) {
 }
 
 // Function to update amount dynamically when quantity changes
-function updateAmount(input ='', price) {
-    console.log('input'+input);
-    console.log('price'+price);   
-    var quantity = parseInt(input.value) || 1;
-    var amount = $(input).closest("tr").find(".amount");
-    amount.text(price * quantity);
-    amount.val(price * quantity);
-    updateEstimateAmount();
+function updateAmount(input, price) {
+    var quantity = parseInt($(input).val()) || 1; // Ensure quantity is a valid number
+    var amountField = $(input).closest("tr").find(".amount");
+
+    var newAmount = price * quantity;
+    amountField.val(newAmount.toFixed(2)); // Ensure it’s a valid number
+
+    updateEstimateAmount(); // Update total amount
 }
+
 
 function updateServiceCharge(data) {
     var serviceCharge = parseFloat(data) || 0;
-    $("#service_charge").text(`$${serviceCharge.toFixed(2)}`);
-    let formattedAmount = parseFloat(data).toFixed(2);
-    $("#service_amount").val(formattedAmount);
-    updateEstimateAmount(); // Recalculate total estimate
+    $("#service_charge").text(`₹${serviceCharge.toFixed(2)}`);
+    $("#service_amount").val(serviceCharge.toFixed(2));
+    updateEstimateAmount();
 }
+
 
 function updateEstimateAmount() {
     var totalEstimate = 0;
 
     $(".amount").each(function () {
-        totalEstimate += parseFloat($(this).text()) || 0;
+        var value = parseFloat($(this).val()) || 0; // Use val() instead of text()
+        totalEstimate += value;
     });
-    console.log('estimate'+totalEstimate);
-    var serviceCharge = parseFloat($("#service_charge").text().replace("$", "")) || 0;
-    var finalTotal = totalEstimate + serviceCharge;
-    console.log(serviceCharge);    
-    $("#estimate_amount").text(`$${finalTotal.toFixed(2)}`); 
-    $('#total_est_amount').val(`${finalTotal.toFixed(2)}`);
+
+    var serviceCharge = parseFloat($("#service_amount").val()) || 0; // Fetch correct service charge
+    var finalTotal = totalEstimate + serviceCharge; // Calculate final amount
+
+    $("#estimate_amount").text(`₹${finalTotal.toFixed(2)}`);
+    $("#total_est_amount").val(finalTotal.toFixed(2));
 }
+
+
+
 // Function to remove a row when clicking "Remove" button
-function removeRow(item_id) {
-    $("#row_" + item_id).remove();
-    updateRowNumbers();
-    updateEstimateAmount();
+let removedItems = [];
+
+function removeRow(itemId, rowId) {
+    let rowElement = document.getElementById("row_" + rowId);
+    
+    if (rowElement) {
+        removedItems.push(itemId); // Store removed item IDs
+        rowElement.remove(); // Remove the row from the DOM
+
+        // Update the hidden input field to track removed items
+        document.getElementById("removed_items").value = JSON.stringify(removedItems);
+    } else {
+        console.error("Error: Row with ID 'row_" + rowId + "' not found.");
+    }
 }
+
+
+
+
+
 // Function to update row numbers after deletion
 function updateRowNumbers() {
     $("#itemTableBody tr").each(function (index) {

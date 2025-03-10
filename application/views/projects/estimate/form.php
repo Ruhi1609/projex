@@ -348,22 +348,7 @@ function updateEstimateAmount() {
 
     $('#total_est_amount').val(`${finalTotal.toFixed(2)}`);
 }
-// function submitEstimate() {
-//     var formData = $("form").serialize(); // Serialize form data
 
-//     $.ajax({
-//         url: "<?= base_url();?>project/estimate/process",
-//         type: "POST",
-//         data: formData,
-//         success: function(response) {
-//             alert("Estimate saved successfully!");
-//             window.location.href = "<?= base_url();?>project/estimate/list"; // Redirect to list page
-//         },
-//         error: function() {
-//             alert("Failed to save estimate. Please try again.");
-//         }
-//     });
-// }
 
 
 

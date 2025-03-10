@@ -97,13 +97,15 @@
             $final_service_amt =$l->price;
             $service_id  =$l->service_id;
             $lead_id =$l->lead_id;          
-        ?><?php }}?>
-              <h4 class="mb-3">Create Quotation</h4>
+?><?php }}?>
+    <h4 class="mb-3">Create Quotation</h4>
     <form class="d-flex flex-column" action="<?=base_url()?>project/quotation/process" method="post">
         <div class="form-wrapper d-flex">           
             <div class="left-section">
                 <input type="hidden" value="<?=$lead_id?>" name="lead_id" >
                 <input type="hidden" value="<?=$mode?>" name="mode">
+                <input type="hidden" name="removed_items" id="removed_items" value="[]">
+
                 <div class="row">
                     <div class="col-md-6">
                         <label for="estimate_number" class="form-label">Quotation Number</label>
@@ -173,24 +175,24 @@
                     </div>
                 </div>
 
-                <div class="item-container">
+        <div class="item-container">
                 <table class="table table-bordered mt-3">
-    <thead class="table-primary">
-        <tr>
-            <th>S.No</th>
-            <th>Item Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Amount</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody id="itemTableBody">
-       <?php if(isset($lead_data)){echo $lead_data;}?>
+                    <thead class="table-primary">
+                        <tr>
+                            <th>S.No</th>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                <tbody id="itemTableBody">
+                <?php if(isset($lead_data)){echo $lead_data;}?>
  
-    </tbody>
-</table>
-</div> 
+              </tbody>
+            </table>
+         </div> 
                 <div class="bottom-section">
                     <div class="row mt-3">
                         <div class="col-md-6">
@@ -204,7 +206,7 @@
                             <input type="hidden" name="service_amount" id="service_amount" value="<?=$final_service_amt?>">
                             </div>
                             <div class="col-md-6">
-                            <h5>Estimate Amount</h5>
+                            <h5>Total Amount</h5>
                             <h3 id="estimate_amount"><?=$final_est_amount?></h3>
                             <input id="total_est_amount" type="hidden" value="<?=$final_est_amount?>" name="total_est_amount" id="">
                             </div>
@@ -270,9 +272,12 @@ function get_service_details(item_id){
 <?php if($mode == 'edit'){?>
     $(window).on('load', function(){
         get_service_details(<?=$service_id?>);
-        updateEstimateAmount();
-        updateAmount();
-    })
+        updateEstimateAmount(); 
+        $(".quantity").each(function () {
+            let price = $(this).closest("tr").find("input[name='price[]']").val();
+            updateAmount(this, price);
+        });
+    });
 <?php } ?>
 function addItemToTable(item) {
     var tableBody = $("#itemTableBody");
@@ -305,50 +310,53 @@ function addItemToTable(item) {
     updateEstimateAmount();
 }
 
-// Function to update amount dynamically when quantity changes
-function updateAmount(input ='', price) {
-    console.log('input'+input);
-    console.log('price'+price);
-   
-    var quantity = parseInt(input.value) || 1;
-    var amount = $(input).closest("tr").find(".amount");
-    amount.text(price * quantity);
-    amount.val(price * quantity);
-    updateEstimateAmount();
+function updateAmount(input, price) {
+    var quantity = parseInt($(input).val()) || 1; 
+    var amountField = $(input).closest("tr").find(".amount");
+
+    var newAmount = price * quantity;
+    amountField.val(newAmount.toFixed(2)); 
+
+    updateEstimateAmount(); 
 }
 
 function updateServiceCharge(data) {
     var serviceCharge = parseFloat(data) || 0;
-    $("#service_charge").text(`$${serviceCharge.toFixed(2)}`);
-    let formattedAmount = parseFloat(data).toFixed(2);
-    $("#service_amount").val(formattedAmount);
-    updateEstimateAmount(); // Recalculate total estimate
+    $("#service_charge").text(`₹${serviceCharge.toFixed(2)}`);
+    $("#service_amount").val(serviceCharge.toFixed(2));
+    updateEstimateAmount();
 }
 
 function updateEstimateAmount() {
     var totalEstimate = 0;
 
     $(".amount").each(function () {
-        totalEstimate += parseFloat($(this).text()) || 0;
+        var value = parseFloat($(this).val()) || 0; 
+        totalEstimate += value;
     });
-    console.log('estimate'+totalEstimate);
-    
 
-    var serviceCharge = parseFloat($("#service_charge").text().replace("$", "")) || 0;
+    var serviceCharge = parseFloat($("#service_amount").val()) || 0; 
+    var finalTotal = totalEstimate + serviceCharge; 
 
-    var finalTotal = totalEstimate + serviceCharge;
-    console.log(serviceCharge);
-    
-    $("#estimate_amount").text(`$${finalTotal.toFixed(2)}`); 
-
-    $('#total_est_amount').val(`${finalTotal.toFixed(2)}`);
+    $("#estimate_amount").text(`₹${finalTotal.toFixed(2)}`);
+    $("#total_est_amount").val(finalTotal.toFixed(2));
 }
 
 // Function to remove a row when clicking "Remove" button
-function removeRow(item_id) {
-    $("#row_" + item_id).remove();
-    updateRowNumbers();
-    updateEstimateAmount();
+let removedItems = [];
+
+function removeRow(itemId, rowId) {
+    let rowElement = document.getElementById("row_" + rowId);
+    
+    if (rowElement) {
+        removedItems.push(itemId); // Store removed item IDs
+        rowElement.remove(); // Remove the row from the DOM
+
+        // Update the hidden input field to track removed items
+        document.getElementById("removed_items").value = JSON.stringify(removedItems);
+    } else {
+        console.error("Error: Row with ID 'row_" + rowId + "' not found.");
+    }
 }
 
 // Function to update row numbers after deletion

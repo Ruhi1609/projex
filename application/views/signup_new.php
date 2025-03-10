@@ -13,6 +13,14 @@
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
+        #registerForm {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
         body {
             display: flex;
@@ -53,23 +61,25 @@
         }
 
         .form-section {
-            flex: 1 1 45%;
-            min-width: 220px;
+            margin-bottom: 15px;
+            width: 100%;
         }
 
         label {
             display: block;
-            font-size: 20px;
             margin-bottom: 5px;
             font-weight: bold;
         }
 
-        input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="number"], input[type="file"], select {
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"] {
             width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 18px;
-            border: none;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
         button[type="submit"] {
@@ -101,134 +111,142 @@
             font-weight: bold;
         }
         .password-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: fit-content;
-}
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+        }
 
-input[type="password"],
-input[type="text"] {
-    padding-right: 30px; /* Space for the eye icon */
-}
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-.toggle-password {
-    position: absolute;
-    right: 10px;
-    cursor: pointer;
-    font-size: 20px;
-    color: #666;
-    user-select: none;
-}
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
 
+        .profile-picture-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
+        .profile-picture-box {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
 
+        .profile-picture-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Register</h1>
         <br>
-        <form id="registerForm" action="<?=base_url();?>Signup/sign_up" method="POST">
-            <!-- <div class="form-section">
-                <label for="profile_picture">Profile Picture:</label>
-                <input type="file" name="profile_picture" accept="image/*" required>
-            </div> -->
-
-            <div class="form-section">
-                <label for="name">Full Name:</label>
-                <input type="text" name="name" placeholder="Full Name" required>
-            </div>
-
-            <div class="form-section">
-                <label for="dob">Date of Birth:</label>
-                <input type="date" name="dob" required>
-            </div>
-
-            <div class="form-section">
-                <label for="contact">Contact Number:</label>
-                <input type="text" name="contact" placeholder="Contact Number" required>
-            </div>
-
-            <div class="form-section">
-                <label for="email">Email Address:</label>
-                <input type="email" name="email" placeholder="Email Address" required>
-            </div>
-
-            <div class="form-section">
-                <label for="address">Address:</label>
-                <input type="text" name="address" placeholder="Address" required>
-            </div>
-
-            <div class="form-section">
-                <label for="country">Country:</label>
-                <input type="text" name="country" placeholder="Country" required>
-            </div>
-
-            <div class="form-section">
-                <label for="state">State:</label>
-                <input type="text" name="state" placeholder="State" required>
-            </div>
-
-            <div class="form-section">
-                <label for="district">District:</label>
-                <input type="text" name="district" placeholder="District" required>
-            </div>
-
-            <div class="form-section">
-                <label for="city">City:</label>
-                <input type="text" name="city" placeholder="City" required>
-            </div>
-
-            <div class="form-section">
-                <label for="pincode">Pincode:</label>
-                <input type="number" name="pincode" placeholder="Pincode" required>
-            </div>
-
-            <div class="form-section">
-                <label for="gender">Gender:</label>
-                <select name="gender" required>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-<div class="form-section">
-    <label for="password">Password:</label>
-    <div class="password-container">
-        <input type="password" name="password" id="password" placeholder="Password" required>
-        <span class="toggle-password" onclick="togglePassword()">
-            <i class="fa fa-eye"></i>
-        </span>
+    <form id="registerForm" action="<?=base_url();?>Signup/sign_up" method="POST" enctype="multipart/form-data">
+    <div class="profile-picture-section">
+            <label for="profile_picture">Profile Picture:</label>
+            <div class="profile-picture-box" onclick="document.getElementById('profile_picture').click()">
+        <img id="profileImage" src="<?= base_url('images/prof.jpg') ?>" alt="Profile Picture">
+        <input type="file" name="profile_picture" id="profile_picture" accept="image/jpeg, image/png" required onchange="previewImage(event)">
     </div>
-</div>
-<div class="form-section">
-    <label for="password">Confirm Password:</label>
-    <div class="password-container">
-        <input type="password" name="Confirm password" id="Confirm password" placeholder="Confirm Password" required>
-        <span class="toggle-password" onclick="togglePassword()">
-            <i class="fa fa-eye"></i>
-        </span>
-    </div>
-</div>
-            <button type="submit">Register</button>
-        </form>
+
+        <div class="form-section">
+            <label for="name">Full Name:</label>
+            <input type="text" name="name" placeholder="Full Name" required>
+        </div>
+
+        <div class="form-section">
+            <label for="contact">Contact Number:</label>
+            <input type="text" name="contact" placeholder="Contact Number" required>
+        </div>
+
+        <div class="form-section">
+            <label for="email">Email Address:</label>
+            <input type="email" name="email" placeholder="Email Address" required>
+        </div>
+
+        <div class="form-section">
+            <label for="password">Password:</label>
+            <div class="password-container">
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('password')">
+                    <i class="fa fa-eye"></i>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label for="confirm_password">Confirm Password:</label>
+            <div class="password-container">
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+                <span class="toggle-password" onclick="togglePassword('confirm_password')">
+                    <i class="fa fa-eye"></i>
+                </span>
+            </div>
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
 
         <p class="login-link">Already have an account? <a href="Login">Sign In</a></p>
     </div>
     <div class="image-container"></div>
     <script>
-        // Toggle Password Visibility
+         function previewImage(event) {
+            const input = event.target;
+            const file = input.files[0];
+            const preview = document.getElementById('profileImage');
+            
+            if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("Please select a .jpg or .png image.");
+                input.value = ""; 
+            }
+        }
         const togglePassword = document.getElementById('togglePassword');
         const passwordField = document.getElementById('password');
-
         togglePassword.addEventListener('click', function () {
-            // Toggle the password visibility
             const type = passwordField.type === 'password' ? 'text' : 'password';
-            passwordField.type = type;
-            
-            // Toggle the icon
+            passwordField.type = type;            
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
         });

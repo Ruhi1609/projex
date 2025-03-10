@@ -89,10 +89,12 @@
                             <input type="hidden"  name="cust_id" value="<?=$cust_id?>">
                             <input type="hidden" name="login_id" value="<?=$login_id?>" >
                             <input type="hidden"name="contact_id" value="<?=$contact_id?>" >
-
-
                         </div>
-
+                        <div class="form-group col-md-4">
+                            <label for="cust_img">Upload Image</label>
+                            <input type="file" class="form-control-file" id="profile_picture" name="profile_picture" multiple>
+                            <small class="form-text text-muted">Allowed formats: JPG, PNG</small>
+                        </div>
                     </div>
 
                     <div class="form-row">

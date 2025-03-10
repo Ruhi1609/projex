@@ -16,4 +16,13 @@ class Cust_dashboard extends CI_Controller {
         // echo '<pre>';print_r($data['cust_service']); exit();
         $this->load->view('customer/cust_dashboard',$data);
     }
+    function view_profile(){
+        $this->load->library('session');
+        $login_id = $this->session->userdata('login_id');
+        $data['cust_id'] = $this->db->query("SELECT C.cust_id FROM customer_tb C LEFT OUTER JOIN login L on L.login_id = C.login_id WHERE L.login_id =" .$login_id )->row()->cust_id;
+        $customer_details   = $this->db->query('SELECT C.cust_name,C.cust_id,CO.* FROM customer_tb C LEFT OUTER JOIN login L ON L.login_id = C.login_id LEFT OUTER JOIN contact_tb CO ON CO.contact_id = C.contact_id WHERE L.login_id ='.$login_id)->result();
+        $data['customer_details'] = $customer_details;
+        // echo '<pre>';print_r($data);exit();
+        $this->load->view('customer/profile',$data);
+    }
 }

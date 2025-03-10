@@ -23,16 +23,8 @@ public function sign_up(){
 
     // Prepare user details
     $userdetails = [
-        "gender" => $data['gender'],
         "email"  =>$data['email'],
         "phone" => $data['contact'],
-        "dob" => $data['dob'],
-        "address" => $data['address'],
-        "country_id" => $data['country'],
-        "state_id" => $data['state'],
-        "district_id" => $data['district'],
-        "city" => $data['city'],
-        "pin-code" => $data['pincode'],
         "login_id" => $login_id
     ];
 
@@ -45,6 +37,30 @@ public function sign_up(){
         "login_id"=> $login_id
     ];
     $this->db->insert("customer_tb", $customer);
+    $cust_id = $this->db->insert_id();
+
+    // Handle profile picture upload
+    if (!empty($_FILES['profile_picture']['name'])) {
+        $config['upload_path'] = 'profile/'; // Target folder
+        $config['allowed_types'] = 'jpg|jpeg|png';
+        $config['file_name'] = $cust_id . '.jpg'; // File saved as cust_id.jpg
+        $config['overwrite'] = true;
+
+        $this->load->library('upload', $config);
+
+        if ($this->upload->do_upload('profile_picture')) {
+            $uploadData = $this->upload->data();
+            $profileImage = 'profile/' . $uploadData['file_name'];
+
+            // Update customer profile with the image path
+            $this->db->where('cust_id', $cust_id);
+            $this->db->update('customer_tb', ['profile_picture' => $profileImage]);
+        } else {
+            $error = $this->upload->display_errors();
+            echo "Profile picture upload failed: " . $error;
+            return;
+        }
+    }
 
     if ($result) {
         redirect("login");

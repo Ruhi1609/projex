@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f1f9ff; /* Light blue background */
+            background-color: #f1f9ff; 
         }
         .sidebar {
             height: 100vh;
@@ -74,6 +74,7 @@
         }
         h4 {
             color: #007bff;
+            font-weight :700;
         }
         .chart-container {
             width: 100%;
@@ -96,7 +97,39 @@
             color:white;
             font-weight:bold;
         }
-
+        .card {
+        border-radius: 10px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: linear-gradient(135deg, #ffffff, #e6f0ff);
+        padding: 15px;
+    }
+    .card:hover {
+        transform: scale(1.08);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+    .card-body {
+        display: flex;
+        align-items: center;
+    }
+    .card-title {
+        color: #007bff;
+        font-size: 1.3rem;
+        font-weight: bold;
+        text-align: left;
+        margin-left: 10px;
+    }
+    .card-text {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        text-align: right;
+        flex-grow: 1;
+    }
+    .icon {
+        font-size: 2rem;
+        color: #007bff;
+    }
     </style>
 </head>
 <body>
@@ -114,54 +147,59 @@
     <a href="<?=base_url();?>employee">Employee</a>
     <a href="<?=base_url();?>customer">Customer</a>
     <a href="<?=base_url();?>items_service">Items/Works</a>
-    <a href="#">Documents</a>
     <a href="<?=base_url();?>logout">Logout</a>
 </div>
 
 <div class="content">
     <div class="container">
+    <h2 class="text">WELCOME <strong><?=strtoupper($admin)?> !</strong></h2>
+    <h4>Overview </h4>
         <div class="row">
-            <!-- Left Section: Overview -->
             <div class="col-md-8">
-                <h4>Overview</h4>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
+                                <i class="icon fas fa-folder-open"></i>
                                 <h5 class="card-title">Incoming Projects</h5>
-                                <p class="card-text"><?=$inc_project?></p>
+                                <p class="card-text" id="inc_project">000</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Total Estimates </h5>
-                                <p class="card-text" ><?=$estimate?></p>
+                                <i class="icon fas fa-file-alt"></i>
+                                <h5 class="card-title">Total Estimates</h5>
+                                <p class="card-text" id="estimate">000</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
+                                <i class="icon fas fa-tasks"></i>
                                 <h5 class="card-title">Running Projects</h5>
-                                <p class="card-text" ><?=$running_project?></p>
+                                <p class="card-text" id="running_project">000</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
+                                <i class="icon fas fa-check-circle"></i>
                                 <h5 class="card-title">Completed Projects</h5>
-                                <p class="card-text" ><?=$complete_project?></p>
+                                <p class="card-text" id="complete_project">000</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Section: Work Completion Chart -->
-            <div class="col-md-4">
+            <div class="col-md-4 d-flex flex-column align-items-center">
                 <h4>Work Completion</h4>
                 <div class="chart-container">
                     <canvas id="workCompletionChart" style="height: 300px; width:300px;"></canvas>
@@ -169,7 +207,6 @@
             </div>
         </div>
 
-    
         <div class="row mt-4">
             <div class="col-md-12">
                 <h4>Latest Work/Service Done</h4>
@@ -180,33 +217,29 @@
                                 <th>Sl no</th>
                                 <th>Employee</th>
                                 <th>Service</th>
-                                <th>Date</th>
+                                <th>Date/Time</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                        <tbody>
-                    <?php $sl_no = 1;
-                        foreach ($employee as $e) { ?>
-                    <tr>
-                        <td><?= $sl_no ?></td>
-                        <td><?= $e->emp_name ?></td>
-                        <td><?= $e->name ?></td>
-                        <td><? ?></td>  
-                        <td><?= $e->status ?></td>  
-                    </tr>
-                    <?php $sl_no++; } ?>
-                </tbody>
+                            <?php $sl_no = 1; foreach ($employee as $e) { ?>
+                            <tr>
+                                <td><?= $sl_no ?></td>
+                                <td><?= $e->emp_name ?></td>
+                                <td><?= $e->name ?></td>
+                                <td><?= $e->max_stop_date ?></td>  
+                                <td><?= $e->status ?></td>  
+                            </tr>
+                            <?php $sl_no++; } ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script>
       document.addEventListener("DOMContentLoaded", function () {
         let projectsLink = document.getElementById("projects-link");
@@ -223,38 +256,129 @@
             }
         });
     });
-   
-
-    // Work Completion Chart
-    document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('workCompletionChart').getContext('2d');
-
-        // Get data from PHP
-        let estimates = <?= $estimate ?>;
-        let quotations = <?= $quotation?>;
-        let workOrders = <?= $work_order ?>;
-
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Estimates', 'Quotations', 'Work Orders'],
-                datasets: [{
-                    data: [estimates, quotations, workOrders],
-                    backgroundColor: ['#28a745', '#ffc107', '#007bff']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
+    function animateNumber(id, target) {
+        let current = 100;
+        let duration = 3000; 
+        let stepTime = Math.abs(Math.floor(duration / (target - current)));
+        let interval = setInterval(() => {
+            current++;
+            if (current >= target) {
+                current = target;
+                clearInterval(interval);
+            }
+            document.getElementById(id).textContent = current.toString().padStart(3, '0');
+        }, stepTime);
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        animateNumber("inc_project", <?=$inc_project?>);
+        animateNumber("estimate", <?=$estimate?>);
+        animateNumber("running_project", <?=$running_project?>);
+        animateNumber("complete_project", <?=$complete_project?>);
+    });   
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('workCompletionChart').getContext('2d');
+    let estimates = <?= $estimate ?>;
+    let quotations = <?= $quotation ?>;
+    let workOrders = <?= $work_order ?>;
+    new Chart(ctx, {
+        type: 'doughnut', 
+        data: {
+            labels: ['Estimates', 'Quotations', 'Work Orders'],
+            datasets: [{
+                data: [estimates, quotations, workOrders],
+                backgroundColor: ['#28a745', '#ffc107', '#007bff'],
+                borderColor: '#fff', 
+                borderWidth: 2,
+                hoverOffset: 10 
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '60%', 
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        color: '#333'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            let value = tooltipItem.raw;
+                            let total = estimates + quotations + workOrders;
+                            let percentage = ((value / total) * 100).toFixed(1);
+                            return `${tooltipItem.label}: ${value} (${percentage}%)`;
+                        }
                     }
                 }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
             }
-        });
+        }
     });
+});
 
+// Work Completion Chart - Professional Half-Pie (Semi-Circle Doughnut Chart)
+// document.addEventListener("DOMContentLoaded", function() {
+//     const ctx = document.getElementById('workCompletionChart').getContext('2d');
+
+//     let estimates = <?= $estimate ?>;
+//     let quotations = <?= $quotation ?>;
+//     let workOrders = <?= $work_order ?>;
+//     let total = estimates + quotations + workOrders;
+
+//     new Chart(ctx, {
+//         type: 'doughnut', // Using doughnut but modifying it to look like a half-pie
+//         data: {
+//             labels: ['Estimates', 'Quotations', 'Work Orders'],
+//             datasets: [{
+//                 data: [estimates, quotations, workOrders],
+//                 backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+//                 borderWidth: 2,
+//                 borderColor: '#fff',
+//                 hoverOffset: 8,
+//             }]
+//         },
+//         options: {
+//             responsive: true,
+//             cutout: '70%', // Creates the doughnut effect
+//             rotation: -90, // Rotates the chart to start from the bottom
+//             circumference: 180, // Makes it a half-pie chart
+//             plugins: {
+//                 legend: {
+//                     position: 'top',
+//                     labels: {
+//                         font: {
+//                             size: 14,
+//                             weight: 'bold'
+//                         },
+//                         color: '#333'
+//                     }
+//                 },
+//                 tooltip: {
+//                     callbacks: {
+//                         label: function(tooltipItem) {
+//                             let value = tooltipItem.raw;
+//                             let percentage = ((value / total) * 100).toFixed(1);
+//                             return `${tooltipItem.label}: ${value} (${percentage}%)`;
+//                         }
+//                     }
+//                 }
+//             },
+//             animation: {
+//                 animateScale: true,
+//                 animateRotate: true
+//             }
+//         }
+//     });
+// });
 </script>
-
 </body>
 </html>

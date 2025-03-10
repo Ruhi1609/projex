@@ -210,13 +210,50 @@
         $('#Workorder_modal .modal-body').html('<p>Error loading data. Please try again.</p>');
     });
 }
-function printContent() {
-    window.print();
+function Workorder_preview(work_ord_id = 0) {
+    $('#Workorder_modal').modal('show');
+
+    var path = "<?=base_url();?>project/work_order/preview/" + work_ord_id;
+
+
+    $.post(path, function(result) {
+        $('#Workorder_modal .modal-body').html(result); 
+    }).fail(function() {
+        $('#Workorder_modal .modal-body').html('<p>Error loading data. Please try again.</p>');
+    });
 }
+$(document).ready(function() {
+            $('#Workorder_modal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+        });
+function printModalContent() {
+    var modalContent = document.querySelector("#Workorder_modal .modal-body").innerHTML;
+    
+    var newWin = window.open('', '', 'width=800, height=600');
+    newWin.document.write(`
+        <html>
+        <head>
+            <title>Print Estimate</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .modal-body { text-align: center; }
+                .hidden-print { display: none !important; }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+            ${modalContent}
+        </body>
+        </html>
+    `);
+    newWin.document.close();
+}
+
 </script>
     <!-- <script>
         function edit(lead_id){
-            window.location.href = "<?=base_url();?>project/work_order/edit/" + lead_id;
+            window.location.href = "<?//=base_url();?>project/work_order/edit/" + lead_id;
         }
 </script> -->
 <script>

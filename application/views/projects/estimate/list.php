@@ -91,6 +91,8 @@
         #searchBar {
             max-width: 250px;
          }
+        
+
 
 
     </style>
@@ -184,7 +186,13 @@
         </div>
     </div>
     <script>
-        function searchTable() {
+        $(document).ready(function() {
+            $('#Estimate_modal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+        });
+
+    function searchTable() {
     var input, filter, table, tr, td, i, j, txtValue;
     input = document.getElementById("searchBar");
     filter = input.value.toLowerCase();
@@ -206,24 +214,45 @@
     }
 }
 
-    function estimate_preview(lead_id = 0) {
+function estimate_preview(lead_id) {
     $('#Estimate_modal').modal('show');
+
     var path = "<?=base_url();?>project/estimate/preview/" + lead_id;
 
     $.post(path, function(result) {
-        $('#Estimate_modal .modal-body').html(result);
+        $('#Estimate_modal .modal-body').html(result); 
     }).fail(function() {
         $('#Estimate_modal .modal-body').html('<p>Error loading data. Please try again.</p>');
     });
 }
-function printContent() {
-    window.print();
+function printModalContent() {
+    var modalContent = document.querySelector("#Estimate_modal .modal-body").innerHTML;
+    
+    var newWin = window.open('', '', 'width=800, height=600');
+    newWin.document.write(`
+        <html>
+        <head>
+            <title>Print Estimate</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .modal-body { text-align: center; }
+                .hidden-print { display: none !important; }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+            ${modalContent}
+        </body>
+        </html>
+    `);
+    newWin.document.close();
 }
-        function edit(lead_id){
+
+
+
+function edit(lead_id){
             window.location.href = "<?=base_url();?>project/estimate/edit/" + lead_id;
-        }
-</script>
-    <script>
+        } 
 function confirmDelete(deleteUrl) {
     Swal.fire({
         title: 'Are you sure?',
@@ -235,10 +264,34 @@ function confirmDelete(deleteUrl) {
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = deleteUrl;
+            $.ajax({
+                url: deleteUrl,
+                type: 'POST',
+                success: function(response) {
+                    Swal.fire({
+                        position: 'top-end', 
+                        title: 'Deleted!',
+                        text: 'Estimate deleted successfully.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload(); // Reload the page or remove row dynamically
+                    });
+                },
+                error: function() {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete the estimate. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
         }
     });
 }
+
 </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

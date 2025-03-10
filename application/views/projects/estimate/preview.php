@@ -1,9 +1,9 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estimate Preview</title> -->
+    <title>Estimate Preview</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -16,40 +16,15 @@
         .customer-details, .table-responsive, .total-amount, .action-buttons {
             margin-bottom: 20px;
         }
+
         @media print {
-    /* Hide all elements except the print area */
-    body * {
-        visibility: hidden;
-    }
-
-    #printArea, #printArea * {
-        visibility: visible;
-    }
-
-    #printArea {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: white;
-        padding: 20px;
-    }
-
-    /* Hide print button and modal */
-    .hidden-print, .modal-backdrop {
+    .hidden-print {
         display: none !important;
     }
-
-    /* Remove default print margins */
-    @page {
-        margin: 0;
-    }
 }
-
-
     </style>
-<!-- </head>
-<body> -->
+</head>
+<body>
 
     <h1 class="estimate-header">ESTIMATE</h1>
     <?php foreach ($lead as $l): ?>
@@ -87,8 +62,10 @@
                     <td><?=$slno?></td>
                     <td><?=$li->name?></td>
                     <td><?=$li->quantity?></td>
-                    <td><?=$li->price?></td>
-                    <td><?=$li->amount?></td>
+                    <td><?= number_format($li->price, 2) ?></td>
+                    <td><?= number_format($li->amount, 2) ?></td>
+
+                    
                 </tr>
                 <?php $slno++; ?>
                 <?php } ?>
@@ -102,23 +79,11 @@
     <?php endforeach; ?>
 <!-- Print Button -->
 <div class="action-buttons d-flex justify-content-center gap-3 hidden-print">
-    <button class="btn btn-primary" onclick="printContent()">Print</button>
+    <!-- <button class="btn btn-primary" onclick="window.print()">Print</button> -->
+    <button class="btn btn-primary" onclick="printModalContent()">Print</button>
+
 </div>
 
-<!-- Modal for Estimate Preview -->
-<div class="modal fade" id="Estimate_modal" tabindex="-1" aria-labelledby="EstimateModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="EstimateModalLabel">Estimate Preview</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="printArea">
-                <!-- Content loaded via AJAX goes here -->
-            </div>
-        </div>
-    </div>
-</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- </body>
-</html> -->
+</body>
+</html>

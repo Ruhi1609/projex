@@ -124,8 +124,6 @@
                             <td>
                                 <select class="form-control status-dropdown" data-id="<?= $m->work_ord_id ?>">
                                     <option value="Pending" <?= ($m->status == 'Pending') ? 'selected' : '' ?>>Pending</option>
-                                    <option value="Approved" <?= ($m->status == 'Approved') ? 'selected' : '' ?>>Approved</option>
-                                    <option value="Rejected" <?= ($m->status == 'Rejected') ? 'selected' : '' ?>>Rejected</option>
                                     <option value="In Progress" <?= ($m->status == 'In Progress') ? 'selected' : '' ?>>In Progress</option>
                                     <option value="Completed" <?= ($m->status == 'Completed') ? 'selected' : '' ?>>Completed</option>
                                 </select>

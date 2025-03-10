@@ -66,9 +66,50 @@ class Customer extends CI_Controller{
                     "login_id"       =>$login_id
                 ];
                 $this->db->insert("customer_tb", $customer);
+                $cust_id = $this->db->insert_id();
+
+                // Handle profile picture upload
+                if (!empty($_FILES['profile_picture']['name'])) {
+                    $config['upload_path'] = 'profile'; // Target folder
+                    $config['allowed_types'] = 'jpg|jpeg|png';
+                    $config['file_name'] = $cust_id . '.jpg'; // File saved as cust_id.jpg
+                    $config['overwrite'] = true;
+            
+                    $this->load->library('upload', $config);
+            
+                    if ($this->upload->do_upload('profile_picture')) {
+                        $uploadData = $this->upload->data();
+                        $profileImage = 'profile/' . $uploadData['file_name'];
+            
+                        // Update customer profile with the image path
+                        $this->db->where('cust_id', $cust_id);
+                        $this->db->update('customer_tb', ['profile_picture' => $profileImage]);
+                    } else {
+                        $error = $this->upload->display_errors();
+                        echo "Profile picture upload failed: " . $error;
+                        return;
+                    }
+                }
             }
-        
-        $this->index();
+            // echo $cust_id;
+        // exit();
+                $this->load->library('session');
+        $login_id = $this->session->userdata('login_id');
+
+        // Check if login ID exists in the session
+        if ($login_id) {
+            // Use query binding to avoid SQL injection
+            $query = $this->db->query("SELECT type FROM login WHERE login_id = ?", [$login_id]);
+            $type = $query->row() ? $query->row()->type : null;
+
+            if ($type === "customer") {
+                redirect("cust_dashboard/view_profile"); 
+            } else {
+                redirect('index');
+            }
+        } else {
+            redirect('login');
+        }
 
     }
     function edit($cust_id=0){
